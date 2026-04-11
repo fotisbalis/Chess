@@ -57,48 +57,7 @@ public class Board {
 		return board;
 	}
 	
-	public King findOpponentKing(boolean whiteTurn) {
-		int r, c;
-		
-		for(r = 0; r < 8; r++) {
-			for(c = 0; c < 0; c++) {
-				
-				Pawn pawn = getPawn(r, c);
-				
-				if(pawn != null && pawn instanceof King && pawn.isWhite() != whiteTurn) {
-					King king = (King) pawn;
-					
-					return king;
-				}
-			}
-		}
-		
-		return null;
-	}
 	
-	/*public boolean isKingInDanger(boolean whiteTurn) {
-		int r, c;
-		
-		King king = findOpponentKing(whiteTurn);
-		int kingRow = king.getRow();
-		int kingCol = king.getCol();
-		
-		if(king == null)
-			return false;
-		
-		for(r = 0; r < 8; r++) {
-			for(c = 0; c < 0; c++) {
-				
-				Pawn pawn = getPawn(r, c);
-				
-				if(pawn != null && pawn.isWhite() == whiteTurn) {
-					boolean validMoves = pawn.possibleMoves(getBoard());
-					
-					if(validMoves[king.getRow()][king.getCol()]) {
-						return true;
-					}
-				}
-			}
-		}
-	}*/
+	
+	
 }

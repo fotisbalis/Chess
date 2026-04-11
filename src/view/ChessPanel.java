@@ -2,6 +2,7 @@ package view;
 
 import pawn.*;
 import board.*;
+import utils.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -98,7 +99,7 @@ public class ChessPanel extends JPanel {
 				return;
 			}
 			
-			if(!clickedPawn.canMove(board)) {
+			if(!MovesUtils.pawnCanMove(board, clickedPawn)) {
 				JOptionPane.showMessageDialog(this, "This Pawn cannot move!");
 				return;
 			}
@@ -265,7 +266,7 @@ public class ChessPanel extends JPanel {
 	
 	private void highlightPossibleMoves(Pawn pawn) {
 		int r, c;
-		boolean[][] moves = pawn.possibleMoves(board);
+		boolean[][] moves = MovesUtils.possibleMoves(board, pawn);
 		
 		for(r = 0; r < 8; r++) {
 			for(c = 0; c < 8; c++) {
