@@ -1,0 +1,62 @@
+package pawn;
+
+import board.*;
+
+public class Bishop extends Pawn {
+	
+	public Bishop(int row, int col, boolean isWhite) {
+		super(row, col, isWhite);
+	}
+	
+    @Override
+    public String getPawnType() {
+    	return "Bishop";
+    }
+    
+    public boolean isValidMove(Board board, int newRow, int newCol) {
+    	int i;
+    	Pawn target = board.getPawn(newRow, newCol);
+    	
+    	if(Math.abs(newRow - row) != Math.abs(newCol - col)) return false;
+   	 
+    	if(newCol > col && newRow > row) {
+	    	for(i = 1; i < (newRow - row); i++) {
+	    		if(board.getPawn(row + i, col + i) != null) {
+	    			return false;
+	    		}
+	    	}
+    	}
+    	else if(newCol < col && newRow > row) {
+	    	for(i = 1; i < (newRow - row); i++) {
+	    		if(board.getPawn(row + i, col - i) != null) {
+	    			return false;
+	    		}
+	    	}
+    	}
+    	else if(newCol > col && newRow < row) {
+	    	for(i = 1; i < (row - newRow); i++) {
+	    		if(board.getPawn(row - i, col + i) != null) {
+	    			return false;
+	    		}
+	    	}
+    	}
+    	else if(newCol < col && newRow < row) {
+	    	for(i = 1; i < (row - newRow); i++) {
+	    		if(board.getPawn(row - i, col - i) != null) {
+	    			return false;
+	    		}
+	    	}
+    	}
+    	
+    	if(target != null) {
+    		if(target.isWhite == isWhite) {
+    			return false;
+    		}
+    	}
+    	
+    	return true;
+    }
+    
+    
+}
+
