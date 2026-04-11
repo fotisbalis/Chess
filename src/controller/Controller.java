@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import board.*;
 import utils.*;
-import view.*;
 
 public class Controller {
 	
@@ -26,14 +25,6 @@ public class Controller {
 	}
 	
 	public static void makeMove(Board board, Pawn pawn, ArrayList<Pawn> captured, int toRow, int toCol) {
-		
-		if (pawn == null)
-	        return;
-	    
-		boolean valid = pawn.isValidMove(board, toRow, toCol);
-		
-		if(!valid)
-	        return;
 		
 		if(pawn instanceof Soldier) {
 			Soldier soldier = (Soldier) pawn;

@@ -59,7 +59,7 @@ public class ChessPanel extends JPanel {
 		turnLabel.setFont(new Font("Arial", Font.BOLD, 24));
 		
 		intitializeGUIBoard();
-		refreshBoard();
+		refreshGUIBoard();
 	}
 	
 	private void intitializeGUIBoard(){
@@ -118,8 +118,19 @@ public class ChessPanel extends JPanel {
 			return;
 		}
 		
-		//Case 3: Player has chosen pawn and now chooses move
+		//Case 3: Player has chosen pawn and now makes move
 		Pawn selectedPawn = board.getPawn(selectedRow, selectedCol);
+		
+		boolean valid = selectedPawn.isValidMove(board, row, col);
+		
+		if (selectedPawn == null || !valid) {
+			selectedRow = -1;
+			selectedCol = -1;
+			
+			resetBoardColors();
+			
+			return;
+		}
 		
 		Controller.makeMove(board, selectedPawn, captured, row, col);
 		
@@ -128,7 +139,7 @@ public class ChessPanel extends JPanel {
 			System.exit(0);
 		}
 		
-		refreshBoard();
+		refreshGUIBoard();
 		updateCapturedPawns();
 		
 		whiteTurn = !whiteTurn;
@@ -145,7 +156,7 @@ public class ChessPanel extends JPanel {
 		markKingInDanger(blackKing);
 	}
 	
-	private void refreshBoard() {
+	private void refreshGUIBoard() {
 		int row, col;
 		
 		for(row = 0; row < 8; row++) {
