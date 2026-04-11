@@ -2,13 +2,13 @@ package view;
 
 import pawn.*;
 import board.*;
+import controller.Controller;
 import utils.*;
 
 import javax.swing.*;
 import java.awt.*;
 
 import java.util.ArrayList;
-
 
 public class ChessPanel extends JPanel {
 	
@@ -35,7 +35,7 @@ public class ChessPanel extends JPanel {
 	private ImageIcon whiteSoldierIcon = new ImageIcon("pictures/white_soldier.jpg");
 	private ImageIcon blackSoldierIcon = new ImageIcon("pictures/black_soldier.jpg");
 	
-	ArrayList<Pawn> captured = new ArrayList<Pawn>();
+	private ArrayList<Pawn> captured = new ArrayList<Pawn>();
 	
 	public ChessPanel() {
 		
@@ -54,8 +54,8 @@ public class ChessPanel extends JPanel {
 		
 		leftCaptured.setPreferredSize(new Dimension(100, 0));
 		rightCaptured.setPreferredSize(new Dimension(100, 0));
-		turnLabel.setPreferredSize(new Dimension(100, 50));
 		
+		turnLabel.setPreferredSize(new Dimension(100, 50));			
 		turnLabel.setFont(new Font("Arial", Font.BOLD, 24));
 		
 		intitializeGUIBoard();
@@ -85,22 +85,15 @@ public class ChessPanel extends JPanel {
 	private void playTurn(int row, int col) {
 		
 		Pawn clickedPawn = board.getPawn(row, col);
-		
+			
 		// Case 1: Player chooses a pawn to play
 		if(selectedRow == -1) {
 	
 			if(clickedPawn == null) {
-				JOptionPane.showMessageDialog(this, "Select a pawn first!");
 				return;
 			}
 				
 			if(clickedPawn.isWhite() != whiteTurn) {
-				JOptionPane.showMessageDialog(this, "You have to choose a " + (whiteTurn ? "White" : "Black") + " pawn!");
-				return;
-			}
-			
-			if(!MovesUtils.pawnCanMove(board, clickedPawn)) {
-				JOptionPane.showMessageDialog(this, "This Pawn cannot move!");
 				return;
 			}
 			
@@ -128,35 +121,13 @@ public class ChessPanel extends JPanel {
 		//Case 3: Player has chosen pawn and now chooses move
 		Pawn selectedPawn = board.getPawn(selectedRow, selectedCol);
 		
-		if (selectedPawn == null) {
-	        selectedRow = -1;
-	        selectedCol = -1;
-	        
-	        resetBoardColors();
-	        
-	        return;
-	    }	
+		Controller.makeMove(board, selectedPawn, captured, row, col);
 		
-		boolean valid = selectedPawn.isValidMove(board, row, col);
-		
-		if(!valid) {
-	        JOptionPane.showMessageDialog(this, "Invalid move!");
-	        selectedRow = -1;
-	        selectedCol = -1;
-	        
-	        resetBoardColors();
-	        
-	        return;
-	    }
-		
-		if(selectedPawn instanceof Soldier) {
-			Soldier soldier = (Soldier) selectedPawn;
-			
-			if(soldier.isFirstMove())
-				soldier.setFirstMove(false);
+		if(GameCheckUtils.gameOver(board)) {
+			JOptionPane.showMessageDialog(this, (selectedPawn.isWhite() ? "White" : "Black") + " has won the game!");
+			System.exit(0);
 		}
 		
-		movePawn(selectedRow, selectedCol, row, col);
 		refreshBoard();
 		updateCapturedPawns();
 		
@@ -166,26 +137,12 @@ public class ChessPanel extends JPanel {
 		
 		updateTurnLabel();
 		resetBoardColors();
-	}
-	
-	private void movePawn(int fromRow, int fromCol, int toRow, int toCol){
 		
-		Pawn origin = board.getPawn(fromRow, fromCol);
-		Pawn target = board.getPawn(toRow, toCol);
+		King whiteKing = KingCheckUtils.findKing(board, true);
+		markKingInDanger(whiteKing);
 		
-		if(target != null) {
-			if(target.getPawnType().equals("King")) {
-				JOptionPane.showMessageDialog(this, (target.isWhite() ? "Black" : "White") + " has won the game!");
-				System.exit(0);
-			}
-			
-			captured.add(target);
-		}
-		
-		board.setPawn(toRow, toCol, origin);
-		board.setPawn(fromRow, fromCol, null);
-		
-		origin.setPosition(toRow, toCol);
+		King blackKing = KingCheckUtils.findKing(board, false);
+		markKingInDanger(blackKing);
 	}
 	
 	private void refreshBoard() {
@@ -202,7 +159,7 @@ public class ChessPanel extends JPanel {
 				else {
 					ImageIcon img;
 					
-					if(pawn.getPawnType().equals("Soldier"))
+					if(pawn instanceof Soldier)
 						img = resizeIcon(getImage(pawn), 35, 60);
 					else
 						img = resizeIcon(getImage(pawn), 50, 80);
@@ -218,6 +175,9 @@ public class ChessPanel extends JPanel {
 		leftCaptured.removeAll();
 	    rightCaptured.removeAll();
 	    
+	    leftCaptured.add(Box.createVerticalGlue());
+	    rightCaptured.add(Box.createVerticalGlue());
+	    
 	    for(Pawn p : captured) {
 	    	
 	    	ImageIcon img;
@@ -227,6 +187,7 @@ public class ChessPanel extends JPanel {
 				img = resizeIcon(getImage(p), 40, 70);
 	    	
 	        JLabel label = new JLabel(img);
+	        label.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 	        if(p.isWhite()) {
 	            rightCaptured.add(label);   
@@ -236,10 +197,9 @@ public class ChessPanel extends JPanel {
 	        }
 	    }
 	    
-	    leftCaptured.revalidate();
-	    leftCaptured.repaint();
-	    rightCaptured.revalidate();
-	    rightCaptured.repaint();
+	    leftCaptured.add(Box.createVerticalGlue());
+	    rightCaptured.add(Box.createVerticalGlue());
+	    
 	}
 	
 	public ImageIcon getImage(Pawn pawn) {
@@ -267,6 +227,8 @@ public class ChessPanel extends JPanel {
 	private void highlightPossibleMoves(Pawn pawn) {
 		int r, c;
 		boolean[][] moves = MovesUtils.possibleMoves(board, pawn);
+		
+		squares[pawn.getRow()][pawn.getCol()].setBackground(Color.ORANGE);
 		
 		for(r = 0; r < 8; r++) {
 			for(c = 0; c < 8; c++) {
@@ -296,6 +258,13 @@ public class ChessPanel extends JPanel {
 	        turnLabel.setText("White's Turn"); 
 		else
 	        turnLabel.setText("Black's Turn");
+	}
+	
+	private void markKingInDanger(King king) {
+		
+		if(KingCheckUtils.isKingInDanger(board, king.isWhite()))
+			squares[king.getRow()][king.getCol()].setBackground(Color.RED);
+		
 	}
 }
 
