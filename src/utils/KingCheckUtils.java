@@ -28,6 +28,9 @@ public class KingCheckUtils {
 		int r, c;
 		
 		King king = KingCheckUtils.findKing(board, whiteTurn);
+		
+		if(king == null) return false;
+		
 		int kingRow = king.getRow();
 		int kingCol = king.getCol();
 		
@@ -47,6 +50,5 @@ public class KingCheckUtils {
 		
 		return false;
 	}
-	
 	
 }

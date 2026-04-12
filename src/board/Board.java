@@ -1,5 +1,7 @@
 package board;
 
+import java.util.ArrayList;
+
 import pawn.*;
 
 public class Board {
@@ -57,7 +59,53 @@ public class Board {
 		return board;
 	}
 	
+	public ArrayList<Pawn> getWhitePawns(){
+		
+		ArrayList<Pawn> whitePawns = new ArrayList<Pawn>();
+		int r, c;
+		
+		for(r = 0; r < 8; r++) {
+			for(c = 0; c < 8; c++) {
+				Pawn p = getPawn(r, c);
+				
+				if(p != null && p.isWhite())
+					whitePawns.add(p);
+			}
+		}
+		
+		return whitePawns;
+	}
 	
+	public ArrayList<Pawn> getBlackPawns(){
+		
+		ArrayList<Pawn> blackPawns = new ArrayList<Pawn>();
+		int r, c;
+		
+		for(r = 0; r < 8; r++) {
+			for(c = 0; c < 8; c++) {
+				Pawn p = getPawn(r, c);
+				
+				if(p != null && !p.isWhite())
+					blackPawns.add(p);
+			}
+		}
+		
+		return blackPawns;
+	}
 	
-	
+	public Board copyBoard() {
+		
+		Board newBoard = new Board();
+		int r, c;
+		
+		for(r = 0; r < 8; r++) {
+			for(c = 0; c < 8; c++) {
+				Pawn pawn = getPawn(r, c);
+				
+				newBoard.setPawn(r, c, pawn);
+			}
+		}
+		
+		return newBoard;
+	}
 }

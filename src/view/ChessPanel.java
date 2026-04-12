@@ -105,7 +105,7 @@ public class ChessPanel extends JPanel {
 			return;
 		}
 		
-		// Case 2: Player changed his mind and chose a new pawn
+		// Case 2: Player has chosen pawn but changed his mind and chooses a new pawn
 		if(clickedPawn != null && clickedPawn.isWhite() == whiteTurn) {
 			
 			resetBoardColors();
@@ -118,7 +118,7 @@ public class ChessPanel extends JPanel {
 			return;
 		}
 		
-		//Case 3: Player has chosen pawn and now makes move
+		//Case 3: Player has chosen pawn but makes invalid move
 		Pawn selectedPawn = board.getPawn(selectedRow, selectedCol);
 		
 		boolean valid = selectedPawn.isValidMove(board, row, col);
@@ -132,28 +132,23 @@ public class ChessPanel extends JPanel {
 			return;
 		}
 		
+		//Case 4: Player has chosen pawn and makes valid move
 		Controller.makeMove(board, selectedPawn, captured, row, col);
-		
-		if(GameCheckUtils.gameOver(board)) {
-			JOptionPane.showMessageDialog(this, (selectedPawn.isWhite() ? "White" : "Black") + " has won the game!");
-			System.exit(0);
-		}
 		
 		refreshGUIBoard();
 		updateCapturedPawns();
+		resetBoardColors();
 		
+		if(GameCheckUtils.isGameOver(board)) {
+			JOptionPane.showMessageDialog(this, GameCheckUtils.gameOverMessage(board));
+			System.exit(0);
+		}
+					
 		whiteTurn = !whiteTurn;
 		selectedRow = -1;
 		selectedCol = -1;
 		
 		updateTurnLabel();
-		resetBoardColors();
-		
-		King whiteKing = KingCheckUtils.findKing(board, true);
-		markKingInDanger(whiteKing);
-		
-		King blackKing = KingCheckUtils.findKing(board, false);
-		markKingInDanger(blackKing);
 	}
 	
 	private void refreshGUIBoard() {
@@ -248,6 +243,7 @@ public class ChessPanel extends JPanel {
 				}
 			}
 		}
+		
 	}
 	
 	private void resetBoardColors() {
@@ -261,6 +257,9 @@ public class ChessPanel extends JPanel {
                     squares[r][c].setBackground(Color.GRAY);
 			}
 		}
+		
+		markKingInDanger();
+		
 	}
 	
 	private void updateTurnLabel() {
@@ -271,11 +270,15 @@ public class ChessPanel extends JPanel {
 	        turnLabel.setText("Black's Turn");
 	}
 	
-	private void markKingInDanger(King king) {
+	private void markKingInDanger() {
 		
-		if(KingCheckUtils.isKingInDanger(board, king.isWhite()))
-			squares[king.getRow()][king.getCol()].setBackground(Color.RED);
+		King whiteKing = KingCheckUtils.findKing(board, true);		
+		King blackKing = KingCheckUtils.findKing(board, false);
+		
+		if(KingCheckUtils.isKingInDanger(board, true))
+			squares[whiteKing.getRow()][whiteKing.getCol()].setBackground(Color.RED);
+		if(KingCheckUtils.isKingInDanger(board, false))
+			squares[blackKing.getRow()][blackKing.getCol()].setBackground(Color.RED);
 		
 	}
 }
-

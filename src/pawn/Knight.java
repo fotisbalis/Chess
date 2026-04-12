@@ -15,6 +15,9 @@ public class Knight extends Pawn {
     
     public boolean isValidMove(Board board, int newRow, int newCol) {
     	
+    	if(newRow < 0 || newRow > 7 || newCol < 0 || newCol >7)
+    		return false;
+    	
     	Pawn target = board.getPawn(newRow, newCol);
     	
     	if((Math.abs(newRow - row) == 1 && Math.abs(newCol - col) == 2) || 

@@ -14,9 +14,13 @@ public class Bishop extends Pawn {
     }
     
     public boolean isValidMove(Board board, int newRow, int newCol) {
+    	
+    	if(newRow < 0 || newRow > 7 || newCol < 0 || newCol >7)
+    		return false;
+    	
     	int i;
     	Pawn target = board.getPawn(newRow, newCol);
-    	
+       	
     	if(Math.abs(newRow - row) != Math.abs(newCol - col)) return false;
    	 
     	if(newCol > col && newRow > row) {
