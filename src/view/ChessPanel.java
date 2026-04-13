@@ -23,7 +23,7 @@ public class ChessPanel extends JPanel {
 	private int selectedRow = -1, selectedCol = -1;
 	private ArrayList<Pawn> captured = new ArrayList<Pawn>();
 	
-	private ImageIcon whiteKingIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\white_king.png");
+	private ImageIcon whiteKingIcon = new ImageIcon("C:\\\\Users\\\\fotis\\\\OneDrive\\\\Έγγραφα\\\\Chess\\\\Chess\\\\Pictures\\white_king.png");
 	private ImageIcon blackKingIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\black_king.png");
 	private ImageIcon whiteQueenIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\white_queen.png");
 	private ImageIcon blackQueenIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\black_queen.png");
