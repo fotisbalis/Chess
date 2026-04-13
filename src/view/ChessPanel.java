@@ -23,18 +23,18 @@ public class ChessPanel extends JPanel {
 	private int selectedRow = -1, selectedCol = -1;
 	private ArrayList<Pawn> captured = new ArrayList<Pawn>();
 	
-	private ImageIcon whiteKingIcon = new ImageIcon("C:\\\\Users\\\\fotis\\\\OneDrive\\\\Έγγραφα\\\\Chess\\\\Chess\\\\Pictures\\white_king.png");
-	private ImageIcon blackKingIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\black_king.png");
-	private ImageIcon whiteQueenIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\white_queen.png");
-	private ImageIcon blackQueenIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\black_queen.png");
-	private ImageIcon whiteBishopIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\white_bishop.png");
-	private ImageIcon blackBishopIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\black_bishop.png");
-	private ImageIcon whiteKnightIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\white_knight.png");
-	private ImageIcon blackKnightIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\black_knight.png");
-	private ImageIcon whiteRookIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\white_rook.png");
-	private ImageIcon blackRookIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\black_rook.png");
-	private ImageIcon whiteSoldierIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\white_soldier.png");
-	private ImageIcon blackSoldierIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\black_soldier.png");
+	private ImageIcon whiteKingIcon = new ImageIcon("resources/white_king.png");
+	private ImageIcon blackKingIcon = new ImageIcon("resources/black_king.png");
+	private ImageIcon whiteQueenIcon = new ImageIcon("resources/white_queen.png");
+	private ImageIcon blackQueenIcon = new ImageIcon("resources/black_queen.png");
+	private ImageIcon whiteBishopIcon = new ImageIcon("resources/white_bishop.png");
+	private ImageIcon blackBishopIcon = new ImageIcon("resources/black_bishop.png");
+	private ImageIcon whiteKnightIcon = new ImageIcon("resources/white_knight.png");
+	private ImageIcon blackKnightIcon = new ImageIcon("resources/black_knight.png");
+	private ImageIcon whiteRookIcon = new ImageIcon("resources/white_rook.png");
+	private ImageIcon blackRookIcon = new ImageIcon("resources/black_rook.png");
+	private ImageIcon whiteSoldierIcon = new ImageIcon("resources/white_soldier.png");
+	private ImageIcon blackSoldierIcon = new ImageIcon("resources/black_soldier.png");
 	
 	private Color backgroundColor = new Color(200, 200, 100);
 	
