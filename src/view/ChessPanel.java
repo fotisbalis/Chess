@@ -139,8 +139,8 @@ public class ChessPanel extends JPanel {
 		updateCapturedPawns();
 		resetBoardColors();
 		
-		if(GameCheckUtils.isGameOver(board)) {
-			JOptionPane.showMessageDialog(this, GameCheckUtils.gameOverMessage(board));
+		if(GameCheckUtils.isGameOver(board, whiteTurn)) {
+			JOptionPane.showMessageDialog(this, GameCheckUtils.gameOverMessage(board, whiteTurn));
 			System.exit(0);
 		}
 					

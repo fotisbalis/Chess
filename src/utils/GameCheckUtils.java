@@ -9,70 +9,79 @@ import controller.Controller;
 
 public class GameCheckUtils {
 	
-	private static boolean isKingCaptured(Board board) {
+	private static String kingCapturedWinner(Board board) {
 		
 		King whiteKing = KingCheckUtils.findKing(board, true);		
 		King blackKing = KingCheckUtils.findKing(board, false);
 		
-		if(whiteKing == null || blackKing == null)
-			return true;
+		if(whiteKing == null)
+			return "Black";
 		
-		return false;
+		if(blackKing == null)
+			return "White";
+		
+		return null;
 	}
 	
-	private static boolean isCheckMate(Board board) {
+	private static String checkMateWinner(Board board, boolean whiteTurn) {
 		
-		boolean safePosition = false;
 		int r, c, row, col;
+		
+		if (!KingCheckUtils.isKingInDanger(board, whiteTurn))
+            return null;
 		
 		for(r = 0; r < 8; r++) {
 			for(c = 0; c < 8; c++) {
 				
 				Pawn currentPawn = board.getPawn(r, c);
 				
-				if(currentPawn != null) {
+				if(currentPawn != null && currentPawn.isWhite() == whiteTurn) {
+					
 					for(row = 0; row < 8; row ++) {
 						for(col = 0; col < 8; col++) {
+							
 							if(currentPawn.isValidMove(board, row, col)) {
+								
 								Board tmpBoard = board.copyBoard();
 								
 								Pawn tmpPawn = tmpBoard.getPawn(r, c);
 								
-								Controller.makeMove(tmpBoard, tmpPawn, null, row, col);
+								Controller.makeMove(tmpBoard, tmpPawn, new ArrayList<Pawn>(), row, col);
 																
-								safePosition = !KingCheckUtils.isKingInDanger(tmpBoard, currentPawn.isWhite());
+								if(!KingCheckUtils.isKingInDanger(tmpBoard, currentPawn.isWhite()))
+										return null;
 							}
 						}
 					}
+					
 				}
 			}
 		}
 		
-		return safePosition;
+		return whiteTurn ? "Black" : "White";
 	}
 	
-	public static boolean isGameOver(Board board) {
+	public static boolean isGameOver(Board board, boolean whiteTurn) {
 		
-		if(GameCheckUtils.isKingCaptured(board))
-			return true;
-		
-		if(GameCheckUtils.isCheckMate(board))
+		if(GameCheckUtils.kingCapturedWinner(board) != null || GameCheckUtils.checkMateWinner(board, !whiteTurn) != null)
 			return true;
 		
 		return false;
 	}
 	
-	public static String gameOverMessage(Board board) {
+	public static String gameOverMessage(Board board, boolean whiteTurn) {
 		
-		if(GameCheckUtils.isKingCaptured(board)) {
-			King whiteKing = KingCheckUtils.findKing(board, true);		
-			King blackKing = KingCheckUtils.findKing(board, false);
+		String winner;
+		
+		if(GameCheckUtils.isGameOver(board, whiteTurn)) {
+			winner = GameCheckUtils.kingCapturedWinner(board);
+			if(winner != null)
+				return "King captured! " + winner + " wins!";
 			
-			if(whiteKing == null) return "Black has won the game!!!";
-			if(blackKing == null) return "White has won the game!!!";
+			winner = GameCheckUtils.checkMateWinner(board, !whiteTurn);
+			if(winner != null)
+				return "Checkmate! " + winner + " wins!";
 		}
-		
-		if (isCheckMate(board)) return "Checkmate!!!";
 		
 		return null;
 	}

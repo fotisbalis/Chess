@@ -59,40 +59,6 @@ public class Board {
 		return board;
 	}
 	
-	public ArrayList<Pawn> getWhitePawns(){
-		
-		ArrayList<Pawn> whitePawns = new ArrayList<Pawn>();
-		int r, c;
-		
-		for(r = 0; r < 8; r++) {
-			for(c = 0; c < 8; c++) {
-				Pawn p = getPawn(r, c);
-				
-				if(p != null && p.isWhite())
-					whitePawns.add(p);
-			}
-		}
-		
-		return whitePawns;
-	}
-	
-	public ArrayList<Pawn> getBlackPawns(){
-		
-		ArrayList<Pawn> blackPawns = new ArrayList<Pawn>();
-		int r, c;
-		
-		for(r = 0; r < 8; r++) {
-			for(c = 0; c < 8; c++) {
-				Pawn p = getPawn(r, c);
-				
-				if(p != null && !p.isWhite())
-					blackPawns.add(p);
-			}
-		}
-		
-		return blackPawns;
-	}
-	
 	public Board copyBoard() {
 		
 		Board newBoard = new Board();
@@ -102,7 +68,32 @@ public class Board {
 			for(c = 0; c < 8; c++) {
 				Pawn pawn = getPawn(r, c);
 				
-				newBoard.setPawn(r, c, pawn);
+				 if (pawn == null)
+		                newBoard.setPawn(r, c, null);
+				 
+				 else if (pawn instanceof King)
+		                newBoard.setPawn(r, c, new King(pawn.getRow(), pawn.getCol(), pawn.isWhite()));
+				 
+				 else if (pawn instanceof Queen)
+		                newBoard.setPawn(r, c, new Queen(pawn.getRow(), pawn.getCol(), pawn.isWhite()));
+				 
+				 else if (pawn instanceof Rook)
+		                newBoard.setPawn(r, c, new Rook(pawn.getRow(), pawn.getCol(), pawn.isWhite()));
+				 
+				 else if (pawn instanceof Bishop)
+		                newBoard.setPawn(r, c, new Bishop(pawn.getRow(), pawn.getCol(), pawn.isWhite()));
+				 
+				 else if (pawn instanceof Knight)
+		                newBoard.setPawn(r, c, new Knight(pawn.getRow(), pawn.getCol(), pawn.isWhite()));
+		         
+				 else if (pawn instanceof Soldier) {
+		                Soldier oldSoldier = (Soldier) pawn;
+		                Soldier newSoldier = new Soldier(oldSoldier.getRow(), oldSoldier.getCol(), oldSoldier.isWhite());
+		                
+		                newSoldier.setFirstMove(oldSoldier.isFirstMove());
+		                
+		                newBoard.setPawn(r, c, newSoldier);
+				 }
 			}
 		}
 		
