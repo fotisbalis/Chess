@@ -25,18 +25,4 @@ public class MovesUtils {
 		return validMoves;
 	}
 	
-	public static boolean pawnCanMove(Board board, Pawn pawn) {
-		int r, c;
-		boolean[][] validMoves = MovesUtils.possibleMoves(board, pawn);
-		
-		for(r = 0; r < 8; r++) {
-			for(c = 0; c < 8; c++) {
-				if(validMoves[r][c]) {
-					return true;
-				}
-			}
-		}
-		
-		return false;
-	}
 }

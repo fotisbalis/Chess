@@ -135,6 +135,8 @@ public class ChessPanel extends JPanel {
 		//Case 4: Player has chosen pawn and makes valid move
 		Controller.makeMove(board, selectedPawn, captured, row, col);
 		
+		PromotionUtils.handlePromotion(this, board, captured, whiteTurn);
+		
 		GUIUtils.refreshGUIBoard(board, squares);
 		GUIUtils.updateCapturedPawns(captured, leftCaptured, rightCaptured);
 		GUIUtils.resetBoardColors(board, squares);

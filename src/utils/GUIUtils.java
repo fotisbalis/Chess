@@ -1,14 +1,9 @@
 package utils;
 
-import java.awt.Color;
-import java.awt.Component;
 import java.util.ArrayList;
 
-import javax.swing.Box;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
+import java.awt.*;
 
 import board.*;
 import pawn.*;
@@ -108,7 +103,7 @@ public class GUIUtils {
 		GUIUtils.markKingInDanger(board, squares);
 	}
 	
-	public static void markKingInDanger(Board board, JButton[][] squares) {
+	private static void markKingInDanger(Board board, JButton[][] squares) {
 		
 		King whiteKing = KingCheckUtils.findKing(board, true);		
 		King blackKing = KingCheckUtils.findKing(board, false);
@@ -137,5 +132,50 @@ public class GUIUtils {
 		}
 	
 	}
+	
+	public static Pawn choosePawnForPromotion(Component parent, ArrayList<Pawn> currentPlayerCaptured) {
+		
+		JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(parent), "Choose Promotion", true);
+		dialog.setLayout(new BorderLayout());
+
+		JPanel piecesPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 15));
+		piecesPanel.setBackground(new Color(200, 200, 100));
+
+		JLabel titleLabel = new JLabel("Choose a captured piece", SwingConstants.CENTER);
+		titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
+		titleLabel.setOpaque(true);
+		titleLabel.setBackground(new Color(200, 200, 100));
+		titleLabel.setForeground(Color.WHITE);
+
+		final Pawn[] selectedPawn = new Pawn[1];
+
+		for(Pawn pawn : currentPlayerCaptured) {
+			JButton button = new JButton();
+			
+			ImageIcon img = ImagesUtils.resizeIcon(ImagesUtils.getImage(pawn), 40, 80);
+			
+			button.setIcon(img);
+			button.setFocusPainted(false);
+			button.setBackground(Color.WHITE);
+			
+			button.addActionListener(e -> {
+				selectedPawn[0] = pawn;
+				dialog.dispose();
+			});
+			
+			piecesPanel.add(button);
+		}
+
+		dialog.add(titleLabel, BorderLayout.NORTH);
+		dialog.add(piecesPanel, BorderLayout.CENTER);
+
+		dialog.pack();
+		dialog.setLocationRelativeTo(parent);
+		dialog.setVisible(true);
+
+		return selectedPawn[0];
+		
+	}
+	
 	
 }
