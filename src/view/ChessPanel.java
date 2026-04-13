@@ -14,28 +14,29 @@ public class ChessPanel extends JPanel {
 	
 	private Board board = new Board();
 	private JButton[][] squares = new JButton[8][8];
-	private JPanel boardPanel = new JPanel(new GridLayout(8,8));
+	private JPanel boardPanel = new JPanel(new GridLayout(8, 8));
 	private JPanel leftCaptured = new JPanel();
 	private JPanel rightCaptured = new JPanel();
 	private JLabel turnLabel = new JLabel("White's Turn", SwingConstants.CENTER);
 	
 	private boolean whiteTurn = true;
 	private int selectedRow = -1, selectedCol = -1;
-	
-	private ImageIcon whiteKingIcon = new ImageIcon("pictures/white_king.jpg");
-	private ImageIcon blackKingIcon = new ImageIcon("pictures/black_king.jpg");
-	private ImageIcon whiteQueenIcon = new ImageIcon("pictures/white_queen.jpg");
-	private ImageIcon blackQueenIcon = new ImageIcon("pictures/black_queen.jpg");
-	private ImageIcon whiteBishopIcon = new ImageIcon("pictures/white_bishop.jpg");
-	private ImageIcon blackBishopIcon = new ImageIcon("pictures/black_bishop.jpg");
-	private ImageIcon whiteKnightIcon = new ImageIcon("pictures/white_knight.jpg");
-	private ImageIcon blackKnightIcon = new ImageIcon("pictures/black_knight.jpg");
-	private ImageIcon whiteRookIcon = new ImageIcon("pictures/white_rook.jpg");
-	private ImageIcon blackRookIcon = new ImageIcon("pictures/black_rook.jpg");
-	private ImageIcon whiteSoldierIcon = new ImageIcon("pictures/white_soldier.jpg");
-	private ImageIcon blackSoldierIcon = new ImageIcon("pictures/black_soldier.jpg");
-	
 	private ArrayList<Pawn> captured = new ArrayList<Pawn>();
+	
+	private ImageIcon whiteKingIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\white_king.png");
+	private ImageIcon blackKingIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\black_king.png");
+	private ImageIcon whiteQueenIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\white_queen.png");
+	private ImageIcon blackQueenIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\black_queen.png");
+	private ImageIcon whiteBishopIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\white_bishop.png");
+	private ImageIcon blackBishopIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\black_bishop.png");
+	private ImageIcon whiteKnightIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\white_knight.png");
+	private ImageIcon blackKnightIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\black_knight.png");
+	private ImageIcon whiteRookIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\white_rook.png");
+	private ImageIcon blackRookIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\black_rook.png");
+	private ImageIcon whiteSoldierIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\white_soldier.png");
+	private ImageIcon blackSoldierIcon = new ImageIcon("C:\\Users\\fotis\\OneDrive\\Έγγραφα\\Chess\\Chess\\Pictures\\black_soldier.png");
+	
+	private Color backgroundColor = new Color(200, 200, 100);
 	
 	public ChessPanel() {
 		
@@ -48,6 +49,8 @@ public class ChessPanel extends JPanel {
 		add(rightCaptured, BorderLayout.EAST);
 		add(turnLabel, BorderLayout.NORTH);
 		
+		boardPanel.setBackground(backgroundColor);
+		
 		leftCaptured.setLayout(new BoxLayout(leftCaptured, BoxLayout.Y_AXIS));
 		rightCaptured.setLayout(new BoxLayout(rightCaptured, BoxLayout.Y_AXIS));
 		turnLabel.setLayout(new BoxLayout(turnLabel, BoxLayout.Y_AXIS));
@@ -55,8 +58,18 @@ public class ChessPanel extends JPanel {
 		leftCaptured.setPreferredSize(new Dimension(100, 0));
 		rightCaptured.setPreferredSize(new Dimension(100, 0));
 		
+		leftCaptured.setOpaque(true);
+		rightCaptured.setOpaque(true);
+
+		leftCaptured.setBackground(backgroundColor);
+		rightCaptured.setBackground(backgroundColor);
+		
 		turnLabel.setPreferredSize(new Dimension(100, 50));			
 		turnLabel.setFont(new Font("Arial", Font.BOLD, 24));
+		
+		turnLabel.setOpaque(true);
+		turnLabel.setBackground(backgroundColor);
+		turnLabel.setForeground(Color.WHITE);
 		
 		intitializeGUIBoard();
 		refreshGUIBoard();
@@ -166,7 +179,9 @@ public class ChessPanel extends JPanel {
 					ImageIcon img;
 					
 					if(pawn instanceof Soldier)
-						img = resizeIcon(getImage(pawn), 35, 60);
+						img = resizeIcon(getImage(pawn), 20, 40);
+					if(pawn instanceof Queen || pawn instanceof King)
+						img = resizeIcon(getImage(pawn), 50, 90);
 					else
 						img = resizeIcon(getImage(pawn), 50, 80);
 					
@@ -188,9 +203,9 @@ public class ChessPanel extends JPanel {
 	    	
 	    	ImageIcon img;
 	    	if(p instanceof Soldier)
-				img = resizeIcon(getImage(p), 30, 50);
+				img = resizeIcon(getImage(p), 30, 60);
 			else
-				img = resizeIcon(getImage(p), 40, 70);
+				img = resizeIcon(getImage(p), 40, 80);
 	    	
 	        JLabel label = new JLabel(img);
 	        label.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -249,12 +264,15 @@ public class ChessPanel extends JPanel {
 	private void resetBoardColors() {
 		int r, c;
 		
+		Color light = new Color(200, 200, 190);
+		Color dark  = new Color(119, 148, 85);
+		
 		for(r = 0; r < 8; r++) {
 			for(c = 0; c < 8; c++) {
 				if((r + c) % 2 == 0)
-                    squares[r][c].setBackground(Color.WHITE);
+                    squares[r][c].setBackground(light);
                 else
-                    squares[r][c].setBackground(Color.GRAY);
+                    squares[r][c].setBackground(dark);
 			}
 		}
 		
@@ -264,10 +282,19 @@ public class ChessPanel extends JPanel {
 	
 	private void updateTurnLabel() {
 		
-		if (whiteTurn)
-	        turnLabel.setText("White's Turn"); 
-		else
+		turnLabel.setOpaque(true);
+		turnLabel.setBackground(backgroundColor);
+		
+		if (whiteTurn) {
+			turnLabel.setText("White's Turn");
+			turnLabel.setForeground(Color.WHITE);
+		}
+	        
+		else {
 	        turnLabel.setText("Black's Turn");
+	        turnLabel.setForeground(Color.BLACK);
+		}
+	
 	}
 	
 	private void markKingInDanger() {
@@ -277,6 +304,7 @@ public class ChessPanel extends JPanel {
 		
 		if(KingCheckUtils.isKingInDanger(board, true))
 			squares[whiteKing.getRow()][whiteKing.getCol()].setBackground(Color.RED);
+		
 		if(KingCheckUtils.isKingInDanger(board, false))
 			squares[blackKing.getRow()][blackKing.getCol()].setBackground(Color.RED);
 		
