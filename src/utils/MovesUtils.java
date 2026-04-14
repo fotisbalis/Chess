@@ -1,6 +1,9 @@
 package utils;
 
+import java.util.ArrayList;
+
 import board.*;
+import controller.Controller;
 import pawn.*;
 
 public class MovesUtils {
@@ -23,6 +26,41 @@ public class MovesUtils {
 		}
 		
 		return validMoves;
+	}
+	
+	public static boolean hasLegalMoves(Board board, boolean whiteTurn) {
+		
+		int r, c, row, col, ignore = 0;
+		
+		for(r = 0; r < 8; r++) {
+			for(c = 0; c < 8; c++) {
+				
+				Pawn currentPawn = board.getPawn(r, c);
+				
+				if(currentPawn != null && currentPawn.isWhite() == whiteTurn) {
+					
+					for(row = 0; row < 8; row ++) {
+						for(col = 0; col < 8; col++) {
+							
+							if(currentPawn.isValidMove(board, row, col)) {
+								
+								Board tmpBoard = board.copyBoard();
+								
+								Pawn tmpPawn = tmpBoard.getPawn(r, c);
+								
+								Controller.makeMove(tmpBoard, new ArrayList<Pawn>(), ignore, tmpPawn, row, col);
+																
+								if(!KingCheckUtils.isKingInDanger(tmpBoard, currentPawn.isWhite()))
+										return true;
+							}
+						}
+					}
+					
+				}
+			}
+		}
+			
+		return false;
 	}
 	
 }

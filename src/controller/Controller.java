@@ -8,7 +8,7 @@ import board.*;
 
 public class Controller {
 	
-	public static void makeMove(Board board, Pawn pawn, ArrayList<Pawn> captured, int toRow, int toCol) {
+	public static void makeMove(Board board, ArrayList<Pawn> captured, int halfMoveCounter, Pawn pawn, int toRow, int toCol) {
 		
 		if(pawn instanceof Soldier) {
 			Soldier soldier = (Soldier) pawn;
@@ -23,9 +23,16 @@ public class Controller {
 		Pawn origin = board.getPawn(fromRow, fromCol);
 		Pawn target = board.getPawn(toRow, toCol);
 		
-		if(target != null) {			
+		if(target != null) {	
 			captured.add(target);
+			halfMoveCounter = 0;
 		}
+		
+		else if(origin instanceof Soldier)
+			halfMoveCounter = 0;
+		
+		else
+			halfMoveCounter++;
 		
 		board.setPawn(toRow, toCol, origin);
 		board.setPawn(fromRow, fromCol, null);

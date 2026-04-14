@@ -12,17 +12,18 @@ import java.util.ArrayList;
 
 public class ChessPanel extends JPanel {
 	
-	private Board board = new Board();
 	private JButton[][] squares = new JButton[8][8];
 	private JPanel boardPanel = new JPanel(new GridLayout(8, 8));
 	private JPanel leftCaptured = new JPanel();
 	private JPanel rightCaptured = new JPanel();
 	private JLabel turnLabel = new JLabel("White's Turn", SwingConstants.CENTER);
 	
+	private Board board = new Board();
 	private boolean whiteTurn = true;
 	private int selectedRow = -1, selectedCol = -1;
 	private ArrayList<Pawn> captured = new ArrayList<Pawn>();
-	private ArrayList<BoardState>BoardStates = new ArrayList<BoardState>();
+	private ArrayList<BoardState> BoardStates = new ArrayList<BoardState>();
+	private int halfMoveCounter = 0;
 	
 	private Color backgroundColor = new Color(200, 200, 100);
 	
@@ -137,7 +138,7 @@ public class ChessPanel extends JPanel {
 		}
 		
 		//Case 4: Player has chosen pawn and makes valid move
-		Controller.makeMove(board, selectedPawn, captured, row, col);
+		Controller.makeMove(board, captured, halfMoveCounter, selectedPawn,  row, col);
 		
 		PromotionUtils.handlePromotion(this, board, captured, whiteTurn);
 
@@ -147,8 +148,8 @@ public class ChessPanel extends JPanel {
 		GUIUtils.updateCapturedPawns(captured, leftCaptured, rightCaptured);
 		GUIUtils.resetBoardColors(board, squares);
 		
-		if(GameCheckUtils.isGameOver(board, whiteTurn, BoardStates)) {
-			JOptionPane.showMessageDialog(this, GameCheckUtils.gameOverMessage(board, whiteTurn, BoardStates));
+		if(GameCheckUtils.isGameOver(board, whiteTurn, BoardStates, halfMoveCounter)) {
+			JOptionPane.showMessageDialog(this, GameCheckUtils.gameOverMessage(board, whiteTurn, BoardStates, halfMoveCounter));
 			System.exit(0);
 		}
 					
