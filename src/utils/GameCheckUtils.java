@@ -61,19 +61,37 @@ public class GameCheckUtils {
 		return whiteTurn ? "Black" : "White";
 	}
 	
-	public static boolean isGameOver(Board board, boolean whiteTurn) {
+	public static boolean isThreefoldRepetition(ArrayList<BoardState> BoardStates) {
 		
-		if(GameCheckUtils.kingCapturedWinner(board) != null || GameCheckUtils.checkMateWinner(board, !whiteTurn) != null)
+		for(BoardState boardSt : BoardStates) {
+			int count = 0;
+			
+			for(BoardState bs : BoardStates) {
+				if(ThreefoldRepetitionUtils.equalBoardStates(boardSt, bs))
+					count++;
+			}
+			
+			if(count >= 3)
+				return true;
+		}
+		
+		return false;
+	}
+	
+	public static boolean isGameOver(Board board, boolean whiteTurn, ArrayList<BoardState> BoardStates) {
+		
+		if(GameCheckUtils.kingCapturedWinner(board) != null || GameCheckUtils.checkMateWinner(board, !whiteTurn) != null ||
+				GameCheckUtils.isThreefoldRepetition(BoardStates))
 			return true;
 		
 		return false;
 	}
 	
-	public static String gameOverMessage(Board board, boolean whiteTurn) {
+	public static String gameOverMessage(Board board, boolean whiteTurn, ArrayList<BoardState> BoardStates) {
 		
 		String winner;
 		
-		if(GameCheckUtils.isGameOver(board, whiteTurn)) {
+		if(GameCheckUtils.isGameOver(board, whiteTurn, BoardStates)) {
 			winner = GameCheckUtils.kingCapturedWinner(board);
 			if(winner != null)
 				return "King captured! " + winner + " wins!";
@@ -81,6 +99,9 @@ public class GameCheckUtils {
 			winner = GameCheckUtils.checkMateWinner(board, !whiteTurn);
 			if(winner != null)
 				return "Checkmate! " + winner + " wins!";
+			
+			if(GameCheckUtils.isThreefoldRepetition(BoardStates))
+				return "Threefold Repetition! Tie game!";
 		}
 		
 		return null;

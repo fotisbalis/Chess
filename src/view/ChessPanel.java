@@ -22,6 +22,7 @@ public class ChessPanel extends JPanel {
 	private boolean whiteTurn = true;
 	private int selectedRow = -1, selectedCol = -1;
 	private ArrayList<Pawn> captured = new ArrayList<Pawn>();
+	private ArrayList<BoardState>BoardStates = new ArrayList<BoardState>();
 	
 	private Color backgroundColor = new Color(200, 200, 100);
 	
@@ -84,6 +85,9 @@ public class ChessPanel extends JPanel {
 	
 	private void playTurn(int row, int col) {
 		
+		PromotionUtils.handlePromotion(this, board, captured, whiteTurn);
+		GUIUtils.refreshGUIBoard(board, squares);
+		
 		Pawn clickedPawn = board.getPawn(row, col);
 			
 		// Case 1: Player chooses a pawn to play
@@ -136,13 +140,15 @@ public class ChessPanel extends JPanel {
 		Controller.makeMove(board, selectedPawn, captured, row, col);
 		
 		PromotionUtils.handlePromotion(this, board, captured, whiteTurn);
+
+		BoardStates.add(new BoardState(board, !whiteTurn));
 		
 		GUIUtils.refreshGUIBoard(board, squares);
 		GUIUtils.updateCapturedPawns(captured, leftCaptured, rightCaptured);
 		GUIUtils.resetBoardColors(board, squares);
 		
-		if(GameCheckUtils.isGameOver(board, whiteTurn)) {
-			JOptionPane.showMessageDialog(this, GameCheckUtils.gameOverMessage(board, whiteTurn));
+		if(GameCheckUtils.isGameOver(board, whiteTurn, BoardStates)) {
+			JOptionPane.showMessageDialog(this, GameCheckUtils.gameOverMessage(board, whiteTurn, BoardStates));
 			System.exit(0);
 		}
 					

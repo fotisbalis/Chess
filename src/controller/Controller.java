@@ -5,11 +5,20 @@ import pawn.*;
 import java.util.ArrayList;
 
 import board.*;
-import utils.*;
 
 public class Controller {
 	
-	private static void movePawn(Board board, ArrayList<Pawn> captured, int fromRow, int fromCol, int toRow, int toCol){
+	public static void makeMove(Board board, Pawn pawn, ArrayList<Pawn> captured, int toRow, int toCol) {
+		
+		if(pawn instanceof Soldier) {
+			Soldier soldier = (Soldier) pawn;
+			
+			if(soldier.isFirstMove())
+				soldier.setFirstMove(false);
+		}
+		
+		int fromRow = pawn.getRow();
+		int fromCol = pawn.getCol();
 		
 		Pawn origin = board.getPawn(fromRow, fromCol);
 		Pawn target = board.getPawn(toRow, toCol);
@@ -22,17 +31,5 @@ public class Controller {
 		board.setPawn(fromRow, fromCol, null);
 		
 		origin.setPosition(toRow, toCol);
-	}
-	
-	public static void makeMove(Board board, Pawn pawn, ArrayList<Pawn> captured, int toRow, int toCol) {
-		
-		if(pawn instanceof Soldier) {
-			Soldier soldier = (Soldier) pawn;
-			
-			if(soldier.isFirstMove())
-				soldier.setFirstMove(false);
-		}
-		
-		Controller.movePawn(board, captured, pawn.getRow(), pawn.getCol(), toRow, toCol);
 	}
 }
