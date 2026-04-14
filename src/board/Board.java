@@ -59,6 +59,24 @@ public class Board {
 		return board;
 	}
 	
+	public ArrayList<Pawn> getPlayerPawns(boolean whiteTurn) {
+		
+		ArrayList<Pawn> currentPlayerPawns = new ArrayList<Pawn>();
+		int r, c;
+		
+		for(r = 0; r < 8; r++) {
+			for(c = 0; c < 8; c++) {
+				
+				Pawn pawn = getPawn(r, c);
+				
+				if(pawn != null && pawn.isWhite() == whiteTurn)
+					currentPlayerPawns.add(pawn);
+			}
+		}
+		
+		return currentPlayerPawns;
+	}
+	
 	public Board copyBoard() {
 		
 		Board newBoard = new Board();

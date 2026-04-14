@@ -148,8 +148,8 @@ public class ChessPanel extends JPanel {
 		GUIUtils.updateCapturedPawns(captured, leftCaptured, rightCaptured);
 		GUIUtils.resetBoardColors(board, squares);
 		
-		if(GameCheckUtils.isGameOver(board, whiteTurn, BoardStates, halfMoveCounter)) {
-			JOptionPane.showMessageDialog(this, GameCheckUtils.gameOverMessage(board, whiteTurn, BoardStates, halfMoveCounter));
+		if(Controller.isGameOver(board, whiteTurn, BoardStates, halfMoveCounter)) {
+			JOptionPane.showMessageDialog(this, GUIUtils.gameOverMessage(board, whiteTurn, BoardStates, halfMoveCounter));
 			System.exit(0);
 		}
 					

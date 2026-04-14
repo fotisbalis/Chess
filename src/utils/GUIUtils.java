@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 
 import board.*;
+import controller.Controller;
 import pawn.*;
 
 public class GUIUtils {
@@ -177,5 +178,33 @@ public class GUIUtils {
 		
 	}
 	
+	public static String gameOverMessage(Board board, boolean whiteTurn, ArrayList<BoardState> BoardStates, int halfMoveCounter) {
+		
+		String winner;
+		
+		if(Controller.isGameOver(board, whiteTurn, BoardStates, halfMoveCounter)) {
+			winner = GameCheckUtils.kingCapturedWinner(board);
+			if(winner != null)
+				return "King captured! " + winner + " wins!";
+			
+			winner = GameCheckUtils.checkMateWinner(board, !whiteTurn);
+			if(winner != null)
+				return "Checkmate! " + winner + " wins!";
+			
+			if(GameCheckUtils.isThreefoldRepetition(BoardStates))
+				return "Threefold Repetition. Tie game!";
+			
+			if(GameCheckUtils.is50MoveRule(halfMoveCounter))
+				return "50 Move rule occured. Tie game!";
+			
+			if(GameCheckUtils.isStaleMate(board, whiteTurn))
+				return "Stalemate occured. Tie game!";
+			
+			if(GameCheckUtils.isInsufficientMaterial(board))
+				return "Insufficient material. Tie game!";
+		}
+		
+		return null;
+	}
 	
 }

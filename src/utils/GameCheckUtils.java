@@ -9,7 +9,7 @@ import controller.Controller;
 
 public class GameCheckUtils {
 	
-	private static String kingCapturedWinner(Board board) {
+	public static String kingCapturedWinner(Board board) {
 		
 		King whiteKing = KingCheckUtils.findKing(board, true);		
 		King blackKing = KingCheckUtils.findKing(board, false);
@@ -23,18 +23,15 @@ public class GameCheckUtils {
 		return null;
 	}
 	
-	private static String checkMateWinner(Board board, boolean whiteTurn) {
+	public static String checkMateWinner(Board board, boolean whiteTurn) {
 		
-		if (!KingCheckUtils.isKingInDanger(board, whiteTurn))
-            return null;
+		if (KingCheckUtils.isKingInDanger(board, whiteTurn) && !(MovesUtils.hasLegalMoves(board, whiteTurn)))
+            return whiteTurn ? "Black" : "White";
 		
-		if (MovesUtils.hasLegalMoves(board, whiteTurn))
-			return null;
-		
-		return whiteTurn ? "Black" : "White";
+		return null;
 	}
 	
-	private static boolean isThreefoldRepetition(ArrayList<BoardState> BoardStates) {
+	public static boolean isThreefoldRepetition(ArrayList<BoardState> BoardStates) {
 		
 		for(BoardState boardState1 : BoardStates) {
 			int count = 0;
@@ -51,55 +48,60 @@ public class GameCheckUtils {
 		return false;
 	}
 	
-	private static boolean is50MoveRule(int halfMoveCounter) {
+	public static boolean is50MoveRule(int halfMoveCounter) {
 		
 		return (halfMoveCounter >= 100) ? true : false;
 	}
 	
-	private static boolean isStaleMate(Board board, boolean whiteTurn) {
+	public static boolean isStaleMate(Board board, boolean whiteTurn) {
 
-	    if(KingCheckUtils.isKingInDanger(board, whiteTurn))
-	        return false;
+	    if(!KingCheckUtils.isKingInDanger(board, whiteTurn) && !MovesUtils.hasLegalMoves(board, whiteTurn))
+	        return true;
 
-	    if(MovesUtils.hasLegalMoves(board, whiteTurn))
-	        return false;
-
-	    return true;
+	    return false;
 	}
 	
-	public static boolean isGameOver(Board board, boolean whiteTurn, ArrayList<BoardState> BoardStates, int halfMoveCounter) {
+	public static boolean isInsufficientMaterial(Board board) {
 		
-		if(GameCheckUtils.kingCapturedWinner(board) != null || GameCheckUtils.checkMateWinner(board, !whiteTurn) != null ||
-				GameCheckUtils.isThreefoldRepetition(BoardStates) || GameCheckUtils.is50MoveRule(halfMoveCounter) ||
-				GameCheckUtils.isStaleMate(board, whiteTurn))
+		ArrayList<Pawn> whitePawns = board.getPlayerPawns(true);
+		ArrayList<Pawn> blackPawns = board.getPlayerPawns(false);
+		
+		// King vs King
+		if(whitePawns.size() == 1 && blackPawns.size() == 1)
 			return true;
+		
+		// King + Bishop vs King OR King + Knight vs King
+		if(whitePawns.size() == 2 && blackPawns.size() == 1) {
+			Pawn extraWhitePiece = insufficientMaterialUtils.getNonKingPiece(whitePawns);
+
+	        if(extraWhitePiece instanceof Bishop || extraWhitePiece instanceof Knight)
+	            return true;
+		}
+		
+		// King vs King + Bishop OR King vs King + Knight
+		if(whitePawns.size() == 2 && blackPawns.size() == 1) {
+			Pawn extraBlackPiece = insufficientMaterialUtils.getNonKingPiece(blackPawns);
+
+			if(extraBlackPiece instanceof Bishop || extraBlackPiece instanceof Knight)
+	            return true;
+		}
+		
+		// King + Bishop vs King + Bishop (Bishops on same color square)
+		if(whitePawns.size() == 2 && blackPawns.size() == 2) {
+	        Pawn extraWhitePiece = insufficientMaterialUtils.getNonKingPiece(whitePawns);
+	        Pawn extraBlackPiece = insufficientMaterialUtils.getNonKingPiece(blackPawns);
+
+	        if(extraWhitePiece instanceof Bishop && extraBlackPiece instanceof Bishop) {
+	            Bishop whiteBishop = (Bishop) extraWhitePiece;
+	            Bishop blackBishop = (Bishop) extraBlackPiece;
+
+	            if(insufficientMaterialUtils.sameColorSquare(whiteBishop, blackBishop))
+	                return true;
+	        }
+	    }
 		
 		return false;
 	}
 	
-	public static String gameOverMessage(Board board, boolean whiteTurn, ArrayList<BoardState> BoardStates, int halfMoveCounter) {
-		
-		String winner;
-		
-		if(GameCheckUtils.isGameOver(board, whiteTurn, BoardStates, halfMoveCounter)) {
-			winner = GameCheckUtils.kingCapturedWinner(board);
-			if(winner != null)
-				return "King captured! " + winner + " wins!";
-			
-			winner = GameCheckUtils.checkMateWinner(board, !whiteTurn);
-			if(winner != null)
-				return "Checkmate! " + winner + " wins!";
-			
-			if(GameCheckUtils.isThreefoldRepetition(BoardStates))
-				return "Threefold Repetition. Tie game!";
-			
-			if(GameCheckUtils.is50MoveRule(halfMoveCounter))
-				return "50 Move rule occured. Tie game!";
-			
-			if(GameCheckUtils.isStaleMate(board, whiteTurn))
-				return "Stalemate occured. Tie game!";
-		}
-		
-		return null;
-	}
+	
 }

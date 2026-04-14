@@ -1,6 +1,7 @@
 package controller;
 
 import pawn.*;
+import utils.GameCheckUtils;
 
 import java.util.ArrayList;
 
@@ -39,4 +40,15 @@ public class Controller {
 		
 		origin.setPosition(toRow, toCol);
 	}
+
+	public static boolean isGameOver(Board board, boolean whiteTurn, ArrayList<BoardState> BoardStates, int halfMoveCounter) {
+		
+		if(GameCheckUtils.kingCapturedWinner(board) != null || GameCheckUtils.checkMateWinner(board, !whiteTurn) != null ||
+				GameCheckUtils.isThreefoldRepetition(BoardStates) || GameCheckUtils.is50MoveRule(halfMoveCounter) ||
+				GameCheckUtils.isStaleMate(board, whiteTurn) || GameCheckUtils.isInsufficientMaterial(board))
+			return true;
+		
+		return false;
+	}
+	
 }
