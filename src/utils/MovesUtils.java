@@ -28,6 +28,26 @@ public class MovesUtils {
 		return validMoves;
 	}
 	
+	public static boolean[][] possibleLegalMoves(Board board, Pawn pawn) {
+		boolean[][] legalMoves = new boolean[8][8];
+		int r, c;
+
+		for(r = 0; r < 8; r++) {
+			for(c = 0; c < 8; c++) {
+				legalMoves[r][c] = false;
+
+				if(pawn.getRow() == r && pawn.getCol() == c)
+					continue;
+
+				if(isLegalMove(board, pawn, r, c))
+					legalMoves[r][c] = true;
+			}
+		}
+
+		return legalMoves;
+	}
+
+	
 	public static boolean hasLegalMoves(Board board, boolean whiteTurn) {
 		
 		int r, c, row, col, ignore = 0;
@@ -42,7 +62,7 @@ public class MovesUtils {
 					for(row = 0; row < 8; row ++) {
 						for(col = 0; col < 8; col++) {
 							
-							if(currentPawn.isValidMove(board, row, col)) {
+							if(MovesUtils.isLegalMove(board, currentPawn, row, col)) {
 								
 								Board tmpBoard = board.copyBoard();
 								
@@ -61,6 +81,19 @@ public class MovesUtils {
 		}
 			
 		return false;
+	}
+	
+	public static boolean isLegalMove(Board board, Pawn pawn, int newRow, int newCol) {
+
+		if(!pawn.isValidMove(board, newRow, newCol))
+			return false;
+
+		Board tmpBoard = board.copyBoard();
+		Pawn tmpPawn = tmpBoard.getPawn(pawn.getRow(), pawn.getCol());
+
+		Controller.makeMove(tmpBoard, new ArrayList<Pawn>(), 0, tmpPawn, newRow, newCol);
+
+		return !KingCheckUtils.isKingInDanger(tmpBoard, pawn.isWhite());
 	}
 	
 }

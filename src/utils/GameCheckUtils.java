@@ -79,7 +79,7 @@ public class GameCheckUtils {
 		}
 		
 		// King vs King + Bishop OR King vs King + Knight
-		if(whitePawns.size() == 2 && blackPawns.size() == 1) {
+		if(whitePawns.size() == 1 && blackPawns.size() == 2) {
 			Pawn extraBlackPiece = insufficientMaterialUtils.getNonKingPiece(blackPawns);
 
 			if(extraBlackPiece instanceof Bishop || extraBlackPiece instanceof Knight)

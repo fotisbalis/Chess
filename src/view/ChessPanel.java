@@ -86,9 +86,6 @@ public class ChessPanel extends JPanel {
 	
 	private void playTurn(int row, int col) {
 		
-		PromotionUtils.handlePromotion(this, board, captured, whiteTurn);
-		GUIUtils.refreshGUIBoard(board, squares);
-		
 		Pawn clickedPawn = board.getPawn(row, col);
 			
 		// Case 1: Player chooses a pawn to play
@@ -126,7 +123,7 @@ public class ChessPanel extends JPanel {
 		//Case 3: Player has chosen pawn but makes invalid move
 		Pawn selectedPawn = board.getPawn(selectedRow, selectedCol);
 		
-		boolean valid = selectedPawn.isValidMove(board, row, col);
+		boolean valid = MovesUtils.isLegalMove(board, selectedPawn, row, col);
 		
 		if (selectedPawn == null || !valid) {
 			selectedRow = -1;
@@ -140,13 +137,15 @@ public class ChessPanel extends JPanel {
 		//Case 4: Player has chosen pawn and makes valid move
 		Controller.makeMove(board, captured, halfMoveCounter, selectedPawn,  row, col);
 		
-		PromotionUtils.handlePromotion(this, board, captured, whiteTurn);
+		GUIUtils.refreshGUIBoard(board, squares);
+		GUIUtils.updateCapturedPawns(captured, leftCaptured, rightCaptured);
+		GUIUtils.resetBoardColors(board, squares);
+		
+		PromotionUtils.handlePromotion(this, board, whiteTurn);
 
 		BoardStates.add(new BoardState(board, !whiteTurn));
 		
 		GUIUtils.refreshGUIBoard(board, squares);
-		GUIUtils.updateCapturedPawns(captured, leftCaptured, rightCaptured);
-		GUIUtils.resetBoardColors(board, squares);
 		
 		if(Controller.isGameOver(board, whiteTurn, BoardStates, halfMoveCounter)) {
 			JOptionPane.showMessageDialog(this, GUIUtils.gameOverMessage(board, whiteTurn, BoardStates, halfMoveCounter));

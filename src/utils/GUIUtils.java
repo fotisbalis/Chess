@@ -46,24 +46,11 @@ public class GUIUtils {
 	    leftCaptured.add(Box.createVerticalGlue());
 	    rightCaptured.add(Box.createVerticalGlue());
 	    
-	    for(Pawn p : captured) {
-	    	
-	    	ImageIcon img;
-	    	if(p instanceof Soldier)
-				img = ImagesUtils.resizeIcon(ImagesUtils.getImage(p), 30, 60);
-			else
-				img = ImagesUtils.resizeIcon(ImagesUtils.getImage(p), 40, 80);
-	    	
-	        JLabel label = new JLabel(img);
-	        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+	    ArrayList<Pawn> whiteCaptured = CapturedUtils.getCurrentPlayerCaptured(captured, true);
+	    ArrayList<Pawn> blackCaptured = CapturedUtils.getCurrentPlayerCaptured(captured, false);
 
-	        if(p.isWhite()) {
-	            rightCaptured.add(label);   
-	        }
-	        else {
-	            leftCaptured.add(label);
-	        }
-	    }
+	    CapturedUtils.addCapturedGroup(leftCaptured, blackCaptured);
+	    CapturedUtils.addCapturedGroup(rightCaptured, whiteCaptured);
 	    
 	    leftCaptured.add(Box.createVerticalGlue());
 	    rightCaptured.add(Box.createVerticalGlue());
@@ -72,7 +59,7 @@ public class GUIUtils {
 	
 	public static void highlightPossibleMoves(Board board, Pawn pawn, JButton[][] squares) {
 		int r, c;
-		boolean[][] moves = MovesUtils.possibleMoves(board, pawn);
+		boolean[][] moves = MovesUtils.possibleLegalMoves(board, pawn);
 		
 		squares[pawn.getRow()][pawn.getCol()].setBackground(Color.ORANGE);
 		
@@ -134,7 +121,7 @@ public class GUIUtils {
 	
 	}
 	
-	public static Pawn choosePawnForPromotion(Component parent, ArrayList<Pawn> currentPlayerCaptured) {
+	public static Pawn choosePawnForPromotion(Component parent, ArrayList<Pawn> pawnsForPromotion) {
 		
 		JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(parent), "Choose Promotion", true);
 		dialog.setLayout(new BorderLayout());
@@ -142,7 +129,7 @@ public class GUIUtils {
 		JPanel piecesPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 15));
 		piecesPanel.setBackground(new Color(200, 200, 100));
 
-		JLabel titleLabel = new JLabel("Choose a captured piece", SwingConstants.CENTER);
+		JLabel titleLabel = new JLabel("Choose a pawn to promote", SwingConstants.CENTER);
 		titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
 		titleLabel.setOpaque(true);
 		titleLabel.setBackground(new Color(200, 200, 100));
@@ -150,14 +137,14 @@ public class GUIUtils {
 
 		final Pawn[] selectedPawn = new Pawn[1];
 
-		for(Pawn pawn : currentPlayerCaptured) {
+		for(Pawn pawn : pawnsForPromotion) {
 			JButton button = new JButton();
 			
 			ImageIcon img = ImagesUtils.resizeIcon(ImagesUtils.getImage(pawn), 40, 80);
 			
 			button.setIcon(img);
 			button.setFocusPainted(false);
-			button.setBackground(Color.WHITE);
+			button.setBackground(new Color(200, 200, 190));
 			
 			button.addActionListener(e -> {
 				selectedPawn[0] = pawn;
