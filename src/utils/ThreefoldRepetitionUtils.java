@@ -40,7 +40,7 @@ public class ThreefoldRepetitionUtils {
 					Soldier s1 = (Soldier) p1;
 					Soldier s2 = (Soldier) p2;
 
-					if(s1.isFirstMove() != s2.isFirstMove())
+					if(s1.hasMoved() != s2.hasMoved())
 						return false;
 				}
 			}

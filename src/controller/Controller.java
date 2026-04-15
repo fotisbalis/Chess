@@ -12,10 +12,7 @@ public class Controller {
 	public static void makeMove(Board board, ArrayList<Pawn> captured, int halfMoveCounter, Pawn pawn, int toRow, int toCol) {
 		
 		if(pawn instanceof Soldier) {
-			Soldier soldier = (Soldier) pawn;
-			
-			if(soldier.isFirstMove())
-				soldier.setFirstMove(false);
+			pawn.setHasMoved(true);
 		}
 		
 		int fromRow = pawn.getRow();

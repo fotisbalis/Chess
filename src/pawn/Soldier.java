@@ -3,20 +3,9 @@ package pawn;
 import board.*;
 
 public class Soldier extends Pawn {
-	protected boolean isFirstMove;	
-	
 	public Soldier(int row, int col, PawnColor color) {
 		super(row, col, color);
-		setFirstMove(true);
 	}
-	
-	public void setFirstMove(boolean firstMove) {
-		this.isFirstMove = firstMove;
-	}
-	
-	public boolean isFirstMove() {
-		return isFirstMove;
-    }
 	
     @Override
     public PawnType getPawnType() {
@@ -29,6 +18,7 @@ public class Soldier extends Pawn {
     		return false;
     	
     	Pawn target = board.getPawn(newRow, newCol);
+    	boolean isFirstMove = !hasMoved();
     	
     	if(color == PawnColor.WHITE) {
     		if(isFirstMove) {

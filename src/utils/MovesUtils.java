@@ -96,4 +96,54 @@ public class MovesUtils {
 		return !KingCheckUtils.isKingInDanger(tmpBoard, pawn.getColor());
 	}
 	
+	public static boolean isSameColumnValidMove(Board board, int fromRow, int toRow, int toCol) {
+		
+		int stepRow = Integer.compare(toRow, fromRow);
+		int i;
+    	
+		for(i = (fromRow + stepRow); i != toRow; i += stepRow) {
+    		if(board.getPawn(i, toCol) != null) {
+    			return false;
+    		}
+    	}
+		
+		return true;
+	}
+	
+	public static boolean isSameRowValidMove(Board board, int fromCol, int toRow, int toCol) {
+		
+		int stepCol = Integer.compare(toCol, fromCol);
+		int i;
+    	
+		for(i = (fromCol + stepCol); i != toCol; i += stepCol) {
+    		if(board.getPawn(toRow, i) != null) {
+    			return false;
+    		}
+    	}
+		
+		
+		
+		return true;
+	}
+	
+	public static boolean isDiagonalValidMove(Board board, int fromRow, int fromCol, int toRow, int toCol) {
+		
+		int stepRow = Integer.compare(toRow, fromRow);
+	    int stepCol = Integer.compare(toCol, fromCol);
+
+	    int currentRow = fromRow + stepRow;
+	    int currentCol = fromCol + stepCol;
+
+	    while (currentRow != toRow && currentCol != toCol) {
+	        if (board.getPawn(currentRow, currentCol) != null) {
+	            return false;
+	        }
+
+	        currentRow += stepRow;
+	        currentCol += stepCol;
+	    }
+
+	    return true;
+	}
+	
 }

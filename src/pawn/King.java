@@ -20,7 +20,10 @@ public class King extends Pawn {
     	
     	Pawn target = board.getPawn(newRow, newCol);
     	
-    	if(Math.abs(newCol - col) > 1 || Math.abs(newRow - row) > 1)
+    	boolean normalKingMove = Math.abs(newCol - col) <= 1 && Math.abs(newRow - row) <= 1;
+    	boolean castlingKingMove = newRow == row && Math.abs(newCol - col) == 2;
+    	
+    	if(!normalKingMove && !castlingKingMove)
     		return false;
     	
     	if(target != null) {

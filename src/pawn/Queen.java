@@ -1,6 +1,7 @@
 package pawn;
 
 import board.Board;
+import utils.MovesUtils;
 
 public class Queen extends Pawn {
 	
@@ -18,7 +19,6 @@ public class Queen extends Pawn {
     	if(newRow < 0 || newRow > 7 || newCol < 0 || newCol >7)
     		return false;
     	
-    	int i;
     	Pawn target = board.getPawn(newRow, newCol);
     	
     	if(row == newRow && col == newCol) 
@@ -33,55 +33,23 @@ public class Queen extends Pawn {
         if (!isStraight && !isDiagonal)
             return false;
         
-        if(isStraight) {
-        	int stepRow = Integer.compare(newRow, row);   	
-        	for(i = (row + stepRow); i != newRow; i += stepRow) {
-        		if(board.getPawn(i, newCol) != null) {
+        if (isStraight) {
+        	if(row == newRow) {
+        		if(!MovesUtils.isSameRowValidMove(board, col, newRow, newCol))
         			return false;
-        		}
         	}
-        	
-        	int stepCol = Integer.compare(newCol, col);
-        	for(i = (col + stepCol); i != newCol; i += stepCol) {
-        		if(board.getPawn(newRow, i) != null) {
+        	else {
+        		if(!MovesUtils.isSameColumnValidMove(board, row, newRow, newCol))
         			return false;
-        		}
         	}
         }
         
-        if(isDiagonal) {
-        	if(newCol > col && newRow > row) {
-    	    	for(i = 1; i < (newRow - row); i++) {
-    	    		if(board.getPawn(row + i, col + i) != null) {
-    	    			return false;
-    	    		}
-    	    	}
-        	}
-        	else if(newCol < col && newRow > row) {
-    	    	for(i = 1; i < (newRow - row); i++) {
-    	    		if(board.getPawn(row + i, col - i) != null) {
-    	    			return false;
-    	    		}
-    	    	}
-        	}
-        	else if(newCol > col && newRow < row) {
-    	    	for(i = 1; i < (row - newRow); i++) {
-    	    		if(board.getPawn(row - i, col + i) != null) {
-    	    			return false;
-    	    		}
-    	    	}
-        	}
-        	else if(newCol < col && newRow < row) {
-    	    	for(i = 1; i < (row - newRow); i++) {
-    	    		if(board.getPawn(row - i, col - i) != null) {
-    	    			return false;
-    	    		}
-    	    	}
-        	}
+        if (isDiagonal) {
+        	if(!MovesUtils.isDiagonalValidMove(board, row, col, newRow, newCol))
+        		return false;
         }
-        
     	
-    	if(target != null) {
+    	if (target != null) {
     		if(target.getColor() == color)
     			return false;
     	}

@@ -3,13 +3,16 @@ package pawn;
 import board.*;
 
 public abstract class Pawn {
+	
 	protected int row, col;
 	protected PawnColor color;
+	protected boolean hasMoved;
 	
 	public Pawn(int row, int col, PawnColor color) {
 		this.row = row;
 		this.col = col;
 		this.color = color;
+		this.hasMoved = false;
 	}
 	
 	public PawnColor getColor() {
@@ -33,11 +36,17 @@ public abstract class Pawn {
 		return col;
 	}
 	
+	public boolean hasMoved() {
+		return hasMoved;
+	}
+	
+	public void setHasMoved(boolean hasMoved) {
+		this.hasMoved = hasMoved;
+	}
+	
 	public abstract PawnType getPawnType();
 	
 	public abstract boolean isValidMove(Board board, int newRow, int newCol);
-	
-	
 	
 }
 

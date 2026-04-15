@@ -87,30 +87,33 @@ public class Board {
 				Pawn pawn = getPawn(r, c);
 				
 				 if (pawn == null)
-		                newBoard.setPawn(r, c, null);
+					 newBoard.setPawn(r, c, null);
 				 
-				 else if (pawn instanceof King)
-		                newBoard.setPawn(r, c, new King(pawn.getRow(), pawn.getCol(), pawn.getColor()));
+				 else if (pawn instanceof King) {
+					 King newKing = new King(pawn.getRow(), pawn.getCol(), pawn.getColor());
+					 newKing.setHasMoved(pawn.hasMoved());
+					 newBoard.setPawn(r, c, newKing);
+				 }
 				 
 				 else if (pawn instanceof Queen)
-		                newBoard.setPawn(r, c, new Queen(pawn.getRow(), pawn.getCol(), pawn.getColor()));
+					 newBoard.setPawn(r, c, new Queen(pawn.getRow(), pawn.getCol(), pawn.getColor()));
 				 
-				 else if (pawn instanceof Rook)
-		                newBoard.setPawn(r, c, new Rook(pawn.getRow(), pawn.getCol(), pawn.getColor()));
+				 else if (pawn instanceof Rook) {
+					 Rook newRook = new Rook(pawn.getRow(), pawn.getCol(), pawn.getColor());
+					 newRook.setHasMoved(pawn.hasMoved());
+					 newBoard.setPawn(r, c, newRook);
+				 }
 				 
 				 else if (pawn instanceof Bishop)
-		                newBoard.setPawn(r, c, new Bishop(pawn.getRow(), pawn.getCol(), pawn.getColor()));
+					 newBoard.setPawn(r, c, new Bishop(pawn.getRow(), pawn.getCol(), pawn.getColor()));
 				 
 				 else if (pawn instanceof Knight)
-		                newBoard.setPawn(r, c, new Knight(pawn.getRow(), pawn.getCol(), pawn.getColor()));
+					 newBoard.setPawn(r, c, new Knight(pawn.getRow(), pawn.getCol(), pawn.getColor()));
 		         
 				 else if (pawn instanceof Soldier) {
-		                Soldier oldSoldier = (Soldier) pawn;
-		                Soldier newSoldier = new Soldier(oldSoldier.getRow(), oldSoldier.getCol(), oldSoldier.getColor());
-		                
-		                newSoldier.setFirstMove(oldSoldier.isFirstMove());
-		                
-		                newBoard.setPawn(r, c, newSoldier);
+					 Soldier newSoldier = new Soldier(pawn.getRow(), pawn.getCol(), pawn.getColor());
+					 newSoldier.setHasMoved(pawn.hasMoved());		                
+					 newBoard.setPawn(r, c, newSoldier);
 				 }
 			}
 		}

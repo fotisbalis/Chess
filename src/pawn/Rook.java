@@ -1,6 +1,7 @@
 package pawn;
 
 import board.Board;
+import utils.MovesUtils;
 
 public class Rook extends Pawn {
 	
@@ -18,29 +19,22 @@ public class Rook extends Pawn {
     	if(newRow < 0 || newRow > 7 || newCol < 0 || newCol >7)
     		return false;
     	
-    	int i;
     	Pawn target = board.getPawn(newRow, newCol);
     	
     	if(row != newRow && col != newCol) return false;
     	
-    	int stepRow = Integer.compare(newRow, row);   	
-    	for(i = (row + stepRow); i != newRow; i += stepRow) {
-    		if(board.getPawn(i, newCol) != null) {
+    	if(row == newRow) {
+    		if(!MovesUtils.isSameRowValidMove(board, col, newRow, newCol))
     			return false;
-    		}
+    	}
+    	else {
+    		if(!MovesUtils.isSameColumnValidMove(board, row, newRow, newCol))
+    			return false;
     	}
     	
-    	int stepCol = Integer.compare(newCol, col);
-    	for(i = (col + stepCol); i != newCol; i += stepCol) {
-    		if(board.getPawn(newRow, i) != null) {
-    			return false;
-    		}
-    	}
-    	
-    	if(target != null) {
+    	if(target != null)
     		if(target.getColor() == color)
     			return false;
-    	}
     	
     	return true;
     }
