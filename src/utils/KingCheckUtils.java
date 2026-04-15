@@ -5,7 +5,7 @@ import board.*;
 
 public class KingCheckUtils {
 
-	public static King findKing(Board board, boolean whiteTurn) {
+	public static King findKing(Board board, PawnColor color) {
 		int r, c;
 		
 		for(r = 0; r < 8; r++) {
@@ -13,7 +13,7 @@ public class KingCheckUtils {
 				
 				Pawn pawn = board.getPawn(r, c);
 				
-				if(pawn != null && pawn instanceof King && pawn.isWhite() == whiteTurn) {
+				if(pawn != null && pawn instanceof King && pawn.getColor() == color) {
 					King king = (King) pawn;
 					
 					return king;
@@ -24,10 +24,10 @@ public class KingCheckUtils {
 		return null;
 	}
 	
-	public static boolean isKingInDanger(Board board, boolean whiteTurn) {
+	public static boolean isKingInDanger(Board board, PawnColor color) {
 		int r, c;
 		
-		King king = KingCheckUtils.findKing(board, whiteTurn);
+		King king = KingCheckUtils.findKing(board, color);
 		
 		if(king == null) return false;
 		
@@ -39,7 +39,7 @@ public class KingCheckUtils {
 				
 				Pawn pawn = board.getPawn(r, c);
 				
-				if(pawn != null && pawn.isWhite() != whiteTurn) {
+				if(pawn != null && pawn.getColor() != color) {
 					boolean validMoves[][] = MovesUtils.possibleMoves(board, pawn);
 					
 					if(validMoves[kingRow][kingCol])

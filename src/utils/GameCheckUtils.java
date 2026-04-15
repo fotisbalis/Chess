@@ -11,8 +11,8 @@ public class GameCheckUtils {
 	
 	public static String kingCapturedWinner(Board board) {
 		
-		King whiteKing = KingCheckUtils.findKing(board, true);		
-		King blackKing = KingCheckUtils.findKing(board, false);
+		King whiteKing = KingCheckUtils.findKing(board, PawnColor.WHITE);		
+		King blackKing = KingCheckUtils.findKing(board, PawnColor.BLACK);
 		
 		if(whiteKing == null)
 			return "Black";
@@ -23,10 +23,10 @@ public class GameCheckUtils {
 		return null;
 	}
 	
-	public static String checkMateWinner(Board board, boolean whiteTurn) {
+	public static String checkMateWinner(Board board, PawnColor turnColor) {
 		
-		if (KingCheckUtils.isKingInDanger(board, whiteTurn) && !(MovesUtils.hasLegalMoves(board, whiteTurn)))
-            return whiteTurn ? "Black" : "White";
+		if (KingCheckUtils.isKingInDanger(board, turnColor) && !(MovesUtils.hasLegalMoves(board, turnColor)))
+            return turnColor == PawnColor.WHITE ? "Black" : "White";
 		
 		return null;
 	}
@@ -53,9 +53,9 @@ public class GameCheckUtils {
 		return (halfMoveCounter >= 100) ? true : false;
 	}
 	
-	public static boolean isStaleMate(Board board, boolean whiteTurn) {
+	public static boolean isStaleMate(Board board, PawnColor turnColor) {
 
-	    if(!KingCheckUtils.isKingInDanger(board, whiteTurn) && !MovesUtils.hasLegalMoves(board, whiteTurn))
+	    if(!KingCheckUtils.isKingInDanger(board, turnColor) && !MovesUtils.hasLegalMoves(board, turnColor))
 	        return true;
 
 	    return false;
@@ -63,8 +63,8 @@ public class GameCheckUtils {
 	
 	public static boolean isInsufficientMaterial(Board board) {
 		
-		ArrayList<Pawn> whitePawns = board.getPlayerPawns(true);
-		ArrayList<Pawn> blackPawns = board.getPlayerPawns(false);
+		ArrayList<Pawn> whitePawns = board.getPlayerPawns(PawnColor.WHITE);
+		ArrayList<Pawn> blackPawns = board.getPlayerPawns(PawnColor.BLACK);
 		
 		// King vs King
 		if(whitePawns.size() == 1 && blackPawns.size() == 1)

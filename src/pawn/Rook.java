@@ -4,8 +4,8 @@ import board.Board;
 
 public class Rook extends Pawn {
 	
-	public Rook(int row, int col, boolean isWhite) {
-		super(row, col, isWhite);
+	public Rook(int row, int col, PawnColor color) {
+		super(row, col, color);
 	}
 	
     @Override
@@ -38,7 +38,7 @@ public class Rook extends Pawn {
     	}
     	
     	if(target != null) {
-    		if(target.isWhite == isWhite)
+    		if(target.getColor() == color)
     			return false;
     	}
     	

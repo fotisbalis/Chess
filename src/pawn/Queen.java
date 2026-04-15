@@ -4,8 +4,8 @@ import board.Board;
 
 public class Queen extends Pawn {
 	
-	public Queen(int row, int col, boolean isWhite) {
-		super(row, col, isWhite);
+	public Queen(int row, int col, PawnColor color) {
+		super(row, col, color);
 	}
 	
     @Override
@@ -80,9 +80,9 @@ public class Queen extends Pawn {
         	}
         }
         
-        
+    	
     	if(target != null) {
-    		if(target.isWhite == isWhite)
+    		if(target.getColor() == color)
     			return false;
     	}
     	

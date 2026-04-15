@@ -48,7 +48,7 @@ public class MovesUtils {
 	}
 
 	
-	public static boolean hasLegalMoves(Board board, boolean whiteTurn) {
+	public static boolean hasLegalMoves(Board board, PawnColor color) {
 		
 		int r, c, row, col, ignore = 0;
 		
@@ -57,7 +57,7 @@ public class MovesUtils {
 				
 				Pawn currentPawn = board.getPawn(r, c);
 				
-				if(currentPawn != null && currentPawn.isWhite() == whiteTurn) {
+				if(currentPawn != null && currentPawn.getColor() == color) {
 					
 					for(row = 0; row < 8; row ++) {
 						for(col = 0; col < 8; col++) {
@@ -70,7 +70,7 @@ public class MovesUtils {
 								
 								Controller.makeMove(tmpBoard, new ArrayList<Pawn>(), ignore, tmpPawn, row, col);
 																
-								if(!KingCheckUtils.isKingInDanger(tmpBoard, currentPawn.isWhite()))
+								if(!KingCheckUtils.isKingInDanger(tmpBoard, currentPawn.getColor()))
 										return true;
 							}
 						}
@@ -93,7 +93,7 @@ public class MovesUtils {
 
 		Controller.makeMove(tmpBoard, new ArrayList<Pawn>(), 0, tmpPawn, newRow, newCol);
 
-		return !KingCheckUtils.isKingInDanger(tmpBoard, pawn.isWhite());
+		return !KingCheckUtils.isKingInDanger(tmpBoard, pawn.getColor());
 	}
 	
 }

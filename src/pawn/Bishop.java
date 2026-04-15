@@ -4,8 +4,8 @@ import board.*;
 
 public class Bishop extends Pawn {
 	
-	public Bishop(int row, int col, boolean isWhite) {
-		super(row, col, isWhite);
+	public Bishop(int row, int col, PawnColor color) {
+		super(row, col, color);
 	}
 	
     @Override
@@ -53,7 +53,7 @@ public class Bishop extends Pawn {
     	}
     	
     	if(target != null) {
-    		if(target.isWhite == isWhite) {
+    		if(target.getColor() == color) {
     			return false;
     		}
     	}

@@ -24,12 +24,12 @@ public class ImagesUtils {
 		ImageIcon blackSoldierIcon = new ImageIcon("resources/black_soldier.png");
 		
         switch(pawn.getPawnType()) {
-        	case "Soldier": return pawn.isWhite() ? whiteSoldierIcon : blackSoldierIcon;
-            case "Rook": return pawn.isWhite() ? whiteRookIcon : blackRookIcon;
-            case "Knight": return pawn.isWhite() ? whiteKnightIcon : blackKnightIcon;
-            case "Bishop": return pawn.isWhite() ? whiteBishopIcon : blackBishopIcon;
-            case "Queen": return pawn.isWhite() ? whiteQueenIcon : blackQueenIcon;
-            case "King": return pawn.isWhite() ? whiteKingIcon : blackKingIcon;
+        	case "Soldier": return pawn.getColor() == PawnColor.WHITE ? whiteSoldierIcon : blackSoldierIcon;
+            case "Rook": return pawn.getColor() == PawnColor.WHITE ? whiteRookIcon : blackRookIcon;
+            case "Knight": return pawn.getColor() == PawnColor.WHITE ? whiteKnightIcon : blackKnightIcon;
+            case "Bishop": return pawn.getColor() == PawnColor.WHITE ? whiteBishopIcon : blackBishopIcon;
+            case "Queen": return pawn.getColor() == PawnColor.WHITE ? whiteQueenIcon : blackQueenIcon;
+            case "King": return pawn.getColor() == PawnColor.WHITE ? whiteKingIcon : blackKingIcon;
         }
 
         return null;

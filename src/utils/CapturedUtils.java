@@ -12,12 +12,12 @@ import javax.swing.SwingConstants;
 
 public class CapturedUtils {
 
-	public static ArrayList<Pawn> getCurrentPlayerCaptured(ArrayList<Pawn> captured, boolean whiteTurn){
+	public static ArrayList<Pawn> getCurrentPlayerCaptured(ArrayList<Pawn> captured, PawnColor color){
 		
 		ArrayList<Pawn> currentPlayerCaptured = new ArrayList<Pawn>();
 		
 		for(Pawn p : captured)
-			if(p.isWhite() == whiteTurn)
+			if(p.getColor() == color)
 				currentPlayerCaptured.add(p);
 				
 		return currentPlayerCaptured;

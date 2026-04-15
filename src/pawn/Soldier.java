@@ -5,8 +5,8 @@ import board.*;
 public class Soldier extends Pawn {
 	protected boolean isFirstMove;	
 	
-	public Soldier(int row, int col, boolean isWhite) {
-		super(row, col, isWhite);
+	public Soldier(int row, int col, PawnColor color) {
+		super(row, col, color);
 		setFirstMove(true);
 	}
 	
@@ -30,13 +30,13 @@ public class Soldier extends Pawn {
     	
     	Pawn target = board.getPawn(newRow, newCol);
     	
-    	if(isWhite) {
+    	if(color == PawnColor.WHITE) {
     		if(isFirstMove) {
     			if(newCol == col && (newRow == (row - 1) || newRow == (row - 2)) && target == null) {
     				return true;
     			}
     			else if((newCol == (col + 1) || newCol == (col - 1)) && newRow == (row - 1) && target != null) {
-    				if(!target.isWhite) {
+    				if(target.getColor() == PawnColor.BLACK) {
     					return true;
     				}    				
     			}
@@ -46,7 +46,7 @@ public class Soldier extends Pawn {
     				return true;
     			}
     			else if((newCol == (col + 1) || newCol == (col - 1)) && newRow == (row - 1) && target != null) {
-    				if(!target.isWhite) {
+    				if(target.getColor() == PawnColor.BLACK) {
     					return true;
     				}    				
     			}
@@ -58,7 +58,7 @@ public class Soldier extends Pawn {
     				return true;
     			}
     			else if((newCol == (col + 1) || newCol == (col - 1)) && newRow == (row + 1) && target != null) {
-    				if(target.isWhite) {
+    				if(target.getColor() == PawnColor.WHITE) {
     					return true;
     				}    				
     			}
@@ -68,7 +68,7 @@ public class Soldier extends Pawn {
     				return true;
     			}
     			else if((newCol == (col + 1) || newCol == (col - 1)) && newRow == (row + 1) && target != null) {
-    				if(target.isWhite) {
+    				if(target.getColor() == PawnColor.WHITE) {
     					return true;
     				}    				
     			}

@@ -10,10 +10,10 @@ public class ThreefoldRepetitionUtils {
 		Board board1 = boardState1.getBoard();
 		Board board2 = boardState2.getBoard();
 		
-		boolean whiteTurn1 = boardState1.getWhiteTurn();
-		boolean whiteTurn2 = boardState2.getWhiteTurn();
+		PawnColor turnColor1 = boardState1.getTurnColor();
+		PawnColor turnColor2 = boardState2.getTurnColor();
 		
-		if(whiteTurn1 != whiteTurn2)
+		if(turnColor1 != turnColor2)
 			return false;
 		
 		int r, c;
@@ -33,7 +33,7 @@ public class ThreefoldRepetitionUtils {
 				if(!p1.getPawnType().equals(p2.getPawnType()))
 					return false;
 				
-				if(p1.isWhite() != p2.isWhite())
+				if(p1.getColor() != p2.getColor())
 					return false;
 				
 				if(p1 instanceof Soldier && p2 instanceof Soldier) {

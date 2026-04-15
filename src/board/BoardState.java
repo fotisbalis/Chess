@@ -1,21 +1,23 @@
 package board;
 
+import pawn.PawnColor;
+
 public class BoardState {
 
 	Board board;
-	boolean whiteTurn;
+	PawnColor turnColor;
 	
-	public BoardState(Board board, boolean whiteTurn) {
+	public BoardState(Board board, PawnColor turnColor) {
 		this.board = board.copyBoard();
-		this.whiteTurn = whiteTurn;
+		this.turnColor = turnColor;
 	}
 	
 	public Board getBoard() {
 		return board;
 	}
 	
-	public boolean getWhiteTurn() {
-		return whiteTurn;
+	public PawnColor getTurnColor() {
+		return turnColor;
 	}
 	
 }

@@ -4,8 +4,8 @@ import board.*;
 
 public class King extends Pawn {
 	
-	public King(int row, int col, boolean isWhite) {
-		super(row, col, isWhite);
+	public King(int row, int col, PawnColor color) {
+		super(row, col, color);
 	}
 	
     @Override
@@ -24,7 +24,7 @@ public class King extends Pawn {
     		return false;
     	
     	if(target != null) {
-    		if(target.isWhite == isWhite)
+    		if(target.getColor() == color)
     			return false;
     	}
     	

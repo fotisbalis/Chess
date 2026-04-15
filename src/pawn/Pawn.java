@@ -4,16 +4,20 @@ import board.*;
 
 public abstract class Pawn {
 	protected int row, col;
-	protected boolean isWhite;
+	protected PawnColor color;
 	
-	public Pawn(int row, int col, boolean isWhite) {
+	public Pawn(int row, int col, PawnColor color) {
 		this.row = row;
 		this.col = col;
-		this.isWhite = isWhite;
+		this.color = color;
 	}
 	
-	public boolean isWhite() {
-		return isWhite;
+	public PawnColor getColor() {
+		return color;
+	}
+
+	public boolean isColor(PawnColor color) {
+		return this.color == color;
 	}
 	
 	public void setPosition(int row, int col) {

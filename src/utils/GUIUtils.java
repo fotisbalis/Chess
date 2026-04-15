@@ -46,8 +46,8 @@ public class GUIUtils {
 	    leftCaptured.add(Box.createVerticalGlue());
 	    rightCaptured.add(Box.createVerticalGlue());
 	    
-	    ArrayList<Pawn> whiteCaptured = CapturedUtils.getCurrentPlayerCaptured(captured, true);
-	    ArrayList<Pawn> blackCaptured = CapturedUtils.getCurrentPlayerCaptured(captured, false);
+	    ArrayList<Pawn> whiteCaptured = CapturedUtils.getCurrentPlayerCaptured(captured, PawnColor.WHITE);
+	    ArrayList<Pawn> blackCaptured = CapturedUtils.getCurrentPlayerCaptured(captured, PawnColor.BLACK);
 
 	    CapturedUtils.addCapturedGroup(leftCaptured, blackCaptured);
 	    CapturedUtils.addCapturedGroup(rightCaptured, whiteCaptured);
@@ -93,23 +93,23 @@ public class GUIUtils {
 	
 	private static void markKingInDanger(Board board, JButton[][] squares) {
 		
-		King whiteKing = KingCheckUtils.findKing(board, true);		
-		King blackKing = KingCheckUtils.findKing(board, false);
+		King whiteKing = KingCheckUtils.findKing(board, PawnColor.WHITE);		
+		King blackKing = KingCheckUtils.findKing(board, PawnColor.BLACK);
 		
-		if(KingCheckUtils.isKingInDanger(board, true))
+		if(KingCheckUtils.isKingInDanger(board, PawnColor.WHITE))
 			squares[whiteKing.getRow()][whiteKing.getCol()].setBackground(Color.RED);
 		
-		if(KingCheckUtils.isKingInDanger(board, false))
+		if(KingCheckUtils.isKingInDanger(board, PawnColor.BLACK))
 			squares[blackKing.getRow()][blackKing.getCol()].setBackground(Color.RED);
 		
 	}
 
-	public static void updateTurnLabel(JLabel turnLabel, Color backgroundColor, boolean whiteTurn) {
+	public static void updateTurnLabel(JLabel turnLabel, Color backgroundColor, PawnColor turnColor) {
 		
 		turnLabel.setOpaque(true);
 		turnLabel.setBackground(backgroundColor);
 		
-		if (whiteTurn) {
+		if (turnColor == PawnColor.WHITE) {
 			turnLabel.setText("White's Turn");
 			turnLabel.setForeground(Color.WHITE);
 		}
@@ -165,16 +165,16 @@ public class GUIUtils {
 		
 	}
 	
-	public static String gameOverMessage(Board board, boolean whiteTurn, ArrayList<BoardState> BoardStates, int halfMoveCounter) {
+	public static String gameOverMessage(Board board, PawnColor turnColor, ArrayList<BoardState> BoardStates, int halfMoveCounter) {
 		
 		String winner;
 		
-		if(Controller.isGameOver(board, whiteTurn, BoardStates, halfMoveCounter)) {
+		if(Controller.isGameOver(board, turnColor, BoardStates, halfMoveCounter)) {
 			winner = GameCheckUtils.kingCapturedWinner(board);
 			if(winner != null)
 				return "King captured! " + winner + " wins!";
 			
-			winner = GameCheckUtils.checkMateWinner(board, !whiteTurn);
+			winner = GameCheckUtils.checkMateWinner(board, turnColor.opposite());
 			if(winner != null)
 				return "Checkmate! " + winner + " wins!";
 			
@@ -184,7 +184,7 @@ public class GUIUtils {
 			if(GameCheckUtils.is50MoveRule(halfMoveCounter))
 				return "50 Move rule occured. Tie game!";
 			
-			if(GameCheckUtils.isStaleMate(board, whiteTurn))
+			if(GameCheckUtils.isStaleMate(board, turnColor))
 				return "Stalemate occured. Tie game!";
 			
 			if(GameCheckUtils.isInsufficientMaterial(board))

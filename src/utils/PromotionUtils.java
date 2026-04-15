@@ -10,31 +10,31 @@ import java.awt.*;
 
 public class PromotionUtils {
 	
-	public static ArrayList<Pawn> getPawnsForPromotion(boolean whiteTurn){
+	public static ArrayList<Pawn> getPawnsForPromotion(PawnColor color){
 	
 		ArrayList<Pawn> pawnsForPromotion = new ArrayList<Pawn>();
 		
-		pawnsForPromotion.add(new Bishop(-1, -1, whiteTurn));
-		pawnsForPromotion.add(new Rook(-1, -1, whiteTurn));
-		pawnsForPromotion.add(new Knight(-1, -1, whiteTurn));
-		pawnsForPromotion.add(new Queen(-1, -1, whiteTurn));
+		pawnsForPromotion.add(new Bishop(-1, -1, color));
+		pawnsForPromotion.add(new Rook(-1, -1, color));
+		pawnsForPromotion.add(new Knight(-1, -1, color));
+		pawnsForPromotion.add(new Queen(-1, -1, color));
 		
 		return pawnsForPromotion;
 	}
 
-	public static void handlePromotion(Component parent, Board board, boolean whiteTurn) {
+	public static void handlePromotion(Component parent, Board board, PawnColor color) {
 		
-		ArrayList<Pawn> pawnsForPromotion = PromotionUtils.getPawnsForPromotion(whiteTurn);
+		ArrayList<Pawn> pawnsForPromotion = PromotionUtils.getPawnsForPromotion(color);
 		
 		int row, col;
 		
-		row = whiteTurn ? 0 : 7;
+		row = color == PawnColor.WHITE ? 0 : 7;
 		
 		for(col = 0; col < 8; col++) {
 			
 			Pawn currentPawn = board.getPawn(row, col);
 			
-			if(currentPawn instanceof Soldier && currentPawn.isWhite() == whiteTurn) {
+			if(currentPawn instanceof Soldier && currentPawn.getColor() == color) {
 				
 				Pawn chosenPawn = GUIUtils.choosePawnForPromotion(parent, pawnsForPromotion);
 				
@@ -52,7 +52,7 @@ public class PromotionUtils {
 	private static void makePromotion(Board board, Soldier soldier, Pawn returningPawn) {
 		
 		int row = soldier.getRow(), col = soldier.getCol();
-		boolean color = soldier.isWhite();
+		PawnColor color = soldier.getColor();
 		
 		if(returningPawn instanceof Queen)
 			board.setPawn(row, col, new Queen(row, col, color));

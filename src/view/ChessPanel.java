@@ -19,7 +19,7 @@ public class ChessPanel extends JPanel {
 	private JLabel turnLabel = new JLabel("White's Turn", SwingConstants.CENTER);
 	
 	private Board board = new Board();
-	private boolean whiteTurn = true;
+	private PawnColor turnColor = PawnColor.WHITE;
 	private int selectedRow = -1, selectedCol = -1;
 	private ArrayList<Pawn> captured = new ArrayList<Pawn>();
 	private ArrayList<BoardState> BoardStates = new ArrayList<BoardState>();
@@ -95,7 +95,7 @@ public class ChessPanel extends JPanel {
 				return;
 			}
 				
-			if(clickedPawn.isWhite() != whiteTurn) {
+			if(clickedPawn.getColor() != turnColor) {
 				return;
 			}
 			
@@ -108,7 +108,7 @@ public class ChessPanel extends JPanel {
 		}
 		
 		// Case 2: Player has chosen pawn but changed his mind and chooses a new pawn
-		if(clickedPawn != null && clickedPawn.isWhite() == whiteTurn) {
+		if(clickedPawn != null && clickedPawn.getColor() == turnColor) {
 			
 			GUIUtils.resetBoardColors(board, squares);
 			
@@ -141,22 +141,23 @@ public class ChessPanel extends JPanel {
 		GUIUtils.updateCapturedPawns(captured, leftCaptured, rightCaptured);
 		GUIUtils.resetBoardColors(board, squares);
 		
-		PromotionUtils.handlePromotion(this, board, whiteTurn);
+		PromotionUtils.handlePromotion(this, board, turnColor);
 
-		BoardStates.add(new BoardState(board, !whiteTurn));
+		BoardStates.add(new BoardState(board, turnColor.opposite()));
 		
 		GUIUtils.refreshGUIBoard(board, squares);
+		GUIUtils.resetBoardColors(board, squares);
 		
-		if(Controller.isGameOver(board, whiteTurn, BoardStates, halfMoveCounter)) {
-			JOptionPane.showMessageDialog(this, GUIUtils.gameOverMessage(board, whiteTurn, BoardStates, halfMoveCounter));
+		if(Controller.isGameOver(board, turnColor, BoardStates, halfMoveCounter)) {
+			JOptionPane.showMessageDialog(this, GUIUtils.gameOverMessage(board, turnColor, BoardStates, halfMoveCounter));
 			System.exit(0);
 		}
 					
-		whiteTurn = !whiteTurn;
+		turnColor = turnColor.opposite();
 		selectedRow = -1;
 		selectedCol = -1;
 		
-		GUIUtils.updateTurnLabel(turnLabel, backgroundColor, whiteTurn);
+		GUIUtils.updateTurnLabel(turnLabel, backgroundColor, turnColor);
 	}
 	
 	
