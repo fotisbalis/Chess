@@ -33,7 +33,7 @@ public abstract class Pawn {
 		return col;
 	}
 	
-	public abstract String getPawnType();
+	public abstract PawnType getPawnType();
 	
 	public abstract boolean isValidMove(Board board, int newRow, int newCol);
 	

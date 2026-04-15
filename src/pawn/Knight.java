@@ -6,11 +6,11 @@ public class Knight extends Pawn {
 	
 	public Knight(int row, int col, PawnColor color) {
 		super(row, col, color);
-	}
+    }
 	
     @Override
-    public String getPawnType() {
-    	return "Knight";
+    public PawnType getPawnType() {
+    	return PawnType.KNIGHT;
     }
     
     public boolean isValidMove(Board board, int newRow, int newCol) {

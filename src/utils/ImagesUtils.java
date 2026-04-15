@@ -24,12 +24,12 @@ public class ImagesUtils {
 		ImageIcon blackSoldierIcon = new ImageIcon("resources/black_soldier.png");
 		
         switch(pawn.getPawnType()) {
-        	case "Soldier": return pawn.getColor() == PawnColor.WHITE ? whiteSoldierIcon : blackSoldierIcon;
-            case "Rook": return pawn.getColor() == PawnColor.WHITE ? whiteRookIcon : blackRookIcon;
-            case "Knight": return pawn.getColor() == PawnColor.WHITE ? whiteKnightIcon : blackKnightIcon;
-            case "Bishop": return pawn.getColor() == PawnColor.WHITE ? whiteBishopIcon : blackBishopIcon;
-            case "Queen": return pawn.getColor() == PawnColor.WHITE ? whiteQueenIcon : blackQueenIcon;
-            case "King": return pawn.getColor() == PawnColor.WHITE ? whiteKingIcon : blackKingIcon;
+        	case SOLDIER: return pawn.getColor() == PawnColor.WHITE ? whiteSoldierIcon : blackSoldierIcon;
+            case ROOK: return pawn.getColor() == PawnColor.WHITE ? whiteRookIcon : blackRookIcon;
+            case KNIGHT: return pawn.getColor() == PawnColor.WHITE ? whiteKnightIcon : blackKnightIcon;
+            case BISHOP: return pawn.getColor() == PawnColor.WHITE ? whiteBishopIcon : blackBishopIcon;
+            case QUEEN: return pawn.getColor() == PawnColor.WHITE ? whiteQueenIcon : blackQueenIcon;
+            case KING: return pawn.getColor() == PawnColor.WHITE ? whiteKingIcon : blackKingIcon;
         }
 
         return null;

@@ -30,7 +30,7 @@ public class ThreefoldRepetitionUtils {
 				if((p1 == null && p2 != null) || (p1 != null && p2 == null))
 					return false;
 				
-				if(!p1.getPawnType().equals(p2.getPawnType()))
+				if(p1.getPawnType() != p2.getPawnType())
 					return false;
 				
 				if(p1.getColor() != p2.getColor())

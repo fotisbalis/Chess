@@ -23,28 +23,12 @@ public class CapturedUtils {
 		return currentPlayerCaptured;
 	}
 	
-	public static ArrayList<Pawn> getSpecificTypeCaptured(ArrayList<Pawn> captured, String pawnType){
+	public static ArrayList<Pawn> getSpecificTypeCaptured(ArrayList<Pawn> captured, PawnType pawnType){
 		
 		ArrayList<Pawn> capturedType = new ArrayList<Pawn>();
 		
 		for(Pawn p : captured) {
-			
-			if(pawnType.equals("Soldier") && p instanceof Soldier)
-				capturedType.add(p);
-			
-			if(pawnType.equals("Rook") && p instanceof Rook)
-				capturedType.add(p);
-
-			if(pawnType.equals("Knight") && p instanceof Knight)
-				capturedType.add(p);
-			
-			if(pawnType.equals("Bishop") && p instanceof Bishop)
-				capturedType.add(p);
-			
-			if(pawnType.equals("Queen") && p instanceof Queen)
-				capturedType.add(p);
-
-			if(pawnType.equals("King") && p instanceof King)
+			if(p.getPawnType() == pawnType)
 				capturedType.add(p);
 		}
 		
@@ -52,9 +36,16 @@ public class CapturedUtils {
 	}
 	
 	public static void addCapturedGroup(JPanel panel, ArrayList<Pawn> capturedPawns) {
-		String[] pieceTypes = {"Queen", "Rook", "Bishop", "Knight", "Soldier", "King"};
+		PawnType[] pieceTypes = {
+			PawnType.QUEEN,
+			PawnType.ROOK,
+			PawnType.BISHOP,
+			PawnType.KNIGHT,
+			PawnType.SOLDIER,
+			PawnType.KING
+		};
 
-		for(String pieceType : pieceTypes) {
+		for(PawnType pieceType : pieceTypes) {
 			ArrayList<Pawn> capturedByType = CapturedUtils.getSpecificTypeCaptured(capturedPawns, pieceType);
 
 			if(capturedByType.isEmpty())

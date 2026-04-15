@@ -16,11 +16,11 @@ public class Soldier extends Pawn {
 	
 	public boolean isFirstMove() {
 		return isFirstMove;
-	}
+    }
 	
     @Override
-    public String getPawnType() {
-    	return "Soldier";
+    public PawnType getPawnType() {
+    	return PawnType.SOLDIER;
     }
     
     public boolean isValidMove(Board board, int newRow, int newCol) {
