@@ -50,7 +50,7 @@ public class MovesUtils {
 	
 	public static boolean hasLegalMoves(Board board, PawnColor color) {
 		
-		int r, c, row, col, ignore = 0;
+		int r, c, row, col;
 		
 		for(r = 0; r < 8; r++) {
 			for(c = 0; c < 8; c++) {
@@ -64,11 +64,7 @@ public class MovesUtils {
 							
 							if(MovesUtils.isLegalMove(board, currentPawn, row, col)) {
 								
-								Board tmpBoard = board.copyBoard();
-								
-								Pawn tmpPawn = tmpBoard.getPawn(r, c);
-								
-								Controller.makeMove(tmpBoard, new ArrayList<Pawn>(), ignore, tmpPawn, row, col);
+								Board tmpBoard = MovesUtils.simulateMove(board, currentPawn, row, col);
 																
 								if(!KingCheckUtils.isKingInDanger(tmpBoard, currentPawn.getColor()))
 										return true;
@@ -83,17 +79,24 @@ public class MovesUtils {
 		return false;
 	}
 	
-	public static boolean isLegalMove(Board board, Pawn pawn, int newRow, int newCol) {
+	public static boolean isLegalMove(Board board, Pawn pawn, int toRow, int toCol) {
 
-		if(!pawn.isValidMove(board, newRow, newCol))
+		if(!pawn.isValidMove(board, toRow, toCol))
 			return false;
 
+		Board tmpBoard = MovesUtils.simulateMove(board, pawn, toRow, toCol);
+
+		return !KingCheckUtils.isKingInDanger(tmpBoard, pawn.getColor());
+	}
+	
+	public static Board simulateMove(Board board, Pawn pawn, int toRow, int toCol) {
+		
 		Board tmpBoard = board.copyBoard();
 		Pawn tmpPawn = tmpBoard.getPawn(pawn.getRow(), pawn.getCol());
 
-		Controller.makeMove(tmpBoard, new ArrayList<Pawn>(), 0, tmpPawn, newRow, newCol);
-
-		return !KingCheckUtils.isKingInDanger(tmpBoard, pawn.getColor());
+		Controller.makeMove(tmpBoard, tmpPawn, toRow, toCol);
+		
+		return tmpBoard;
 	}
 	
 	public static boolean isSameColumnValidMove(Board board, int fromRow, int toRow, int toCol) {
@@ -120,8 +123,6 @@ public class MovesUtils {
     			return false;
     		}
     	}
-		
-		
 		
 		return true;
 	}

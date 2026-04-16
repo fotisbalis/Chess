@@ -4,16 +4,38 @@ import board.*;
 import pawn.*;
 
 public class CastlingUtils {
-
-	public static boolean isMoveCastling(Pawn pawn, int newRow, int newCol) {
+	
+	public static boolean canCastlingHappen(Board board, PawnColor turnColor, King king, Rook rook, int kingTargetCol) {
 		
-		if(!(pawn instanceof King))
+		int stepCastlingDirection = CastlingUtils.isKingsideCastling(king.getCol(), kingTargetCol) ? 1 : -1;
+		int row = king.getRow();
+		
+		// 1st rule: King and Rook should not have moved
+		if(king.hasMoved() || rook.hasMoved())
 			return false;
 		
-		if(pawn.getRow() != newRow)
+		// 2nd rule: Squares between King and Rook must be empty
+		if(!MovesUtils.isSameRowValidMove(board, rook.getCol(), row, king.getCol() - stepCastlingDirection))
 			return false;
 		
-		if(Math.abs(newCol - pawn.getCol()) != 2)
+		// 3rd rule: King must not currently be in check
+		if(KingCheckUtils.isKingInDanger(board, turnColor))
+			return false;
+		
+		// 4th rule: The square that the King will pass through and the destination square must not be in check
+		if(!MovesUtils.isLegalMove(board, king, row, king.getCol() + stepCastlingDirection) ||
+				!MovesUtils.isLegalMove(board, king, row, kingTargetCol))
+			return false;
+		
+		return true;
+	}
+	
+	public static boolean isMoveCastling(King king, int newRow, int newCol) {
+		
+		if(king.getRow() != newRow)
+			return false;
+		
+		if(Math.abs(newCol - king.getCol()) != 2)
 			return false;
 		
 		return true;
@@ -23,52 +45,19 @@ public class CastlingUtils {
 		
 		return toCol > fromCol;
 	}
-
-	public static int getRookStartCol(int kingTargetCol) {
+	
+	public static Rook getRook(Board board, King king, boolean isKingSide) {
 		
-		if(kingTargetCol == 6)
-			return 7; 
+		int row = king.getRow();
+		int col = isKingSide ? 7 : 0;
 		
-		if(kingTargetCol == 2)
-			return 0;
+		Pawn pawn = board.getPawn(row, col);
 		
-		//Ignore
-		return -1;
+		if(pawn instanceof Rook)
+			return (Rook) pawn;
+		
+		return null;	
 	}
-
-	public static int getRookTargetCol(int kingTargetCol) {
-		
-		if(kingTargetCol == 6)
-			return 5; 
-		
-		if(kingTargetCol == 2)
-			return 3;
-		
-		//Ignore
-		return -1;
-	}
-
-	public static int getKingMiddleCol(int fromCol, int toCol) {
-		
-		return fromCol + Integer.compare(toCol, fromCol);
-	}
-
-	public static boolean hasCastlingRook(Board board, King king, int targetCol) {
-		
-		Pawn pawn = board.getPawn(king.getRow(), CastlingUtils.getRookStartCol(targetCol));
-
-		if(!(pawn instanceof Rook))
-			return false;
-		
-		Rook rook = (Rook) pawn;
-		
-		if(rook.getColor() != king.getColor())
-			return false;
-		
-		if(rook.hasMoved())
-			return false;
-			
-		return true;
-	}
+	
 
 }

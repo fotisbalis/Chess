@@ -1,6 +1,7 @@
 package controller;
 
 import pawn.*;
+import utils.CastlingUtils;
 import utils.GameCheckUtils;
 
 import java.util.ArrayList;
@@ -9,33 +10,29 @@ import board.*;
 
 public class Controller {
 	
-	public static void makeMove(Board board, ArrayList<Pawn> captured, int halfMoveCounter, Pawn pawn, int toRow, int toCol) {
-		
-		if(pawn instanceof Soldier) {
-			pawn.setHasMoved(true);
-		}
-		
+	public static void makeMove(Board board, Pawn pawn, int toRow, int toCol) {
+	
 		int fromRow = pawn.getRow();
 		int fromCol = pawn.getCol();
 		
-		Pawn origin = board.getPawn(fromRow, fromCol);
-		Pawn target = board.getPawn(toRow, toCol);
-		
-		if(target != null) {	
-			captured.add(target);
-			halfMoveCounter = 0;
-		}
-		
-		else if(origin instanceof Soldier)
-			halfMoveCounter = 0;
-		
-		else
-			halfMoveCounter++;
-		
-		board.setPawn(toRow, toCol, origin);
+		board.setPawn(toRow, toCol, pawn);
 		board.setPawn(fromRow, fromCol, null);
 		
-		origin.setPosition(toRow, toCol);
+		pawn.setPosition(toRow, toCol);
+		pawn.setHasMoved(true);
+	}
+	
+	public static void makeCastlingMove(Board board, King king, boolean isKingSide) {
+		
+		Rook rook = CastlingUtils.getRook(board, king, isKingSide);
+		
+		int row = king.getRow();
+		int newKingCol = isKingSide ? (king.getCol() + 2) : (king.getCol() - 2);
+		int newRookCol = isKingSide ? (newKingCol - 1) : (newKingCol + 1);	
+		
+		Controller.makeMove(board, king, row, newKingCol);
+		
+		Controller.makeMove(board, rook, row, newRookCol);			
 	}
 
 	public static boolean isGameOver(Board board, PawnColor turnColor, ArrayList<BoardState> BoardStates, int halfMoveCounter) {
