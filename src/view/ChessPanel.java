@@ -137,21 +137,22 @@ public class ChessPanel extends JPanel {
 		//Case 4: Player has chosen pawn and makes valid move
 		Pawn target = board.getPawn(row, col);
 		
+		
 		if(target != null) {	
 			captured.add(target);
 			halfMoveCounter = 0;
 		}
-		
 		else if(selectedPawn instanceof Soldier)
 			halfMoveCounter = 0;
-		
 		else
 			halfMoveCounter++;
+		
 		
 		if(selectedPawn instanceof King && CastlingUtils.isMoveCastling((King) selectedPawn, row, col))
 			Controller.makeCastlingMove(board, (King) selectedPawn, CastlingUtils.isKingsideCastling(selectedPawn.getCol(), col));
 		else
 			Controller.makeMove(board, selectedPawn,  row, col);
+		
 		
 		GUIUtils.refreshGUIBoard(board, squares);
 		GUIUtils.updateCapturedPawns(captured, leftCaptured, rightCaptured);
@@ -168,7 +169,8 @@ public class ChessPanel extends JPanel {
 			JOptionPane.showMessageDialog(this, GUIUtils.gameOverMessage(board, turnColor, BoardStates, halfMoveCounter));
 			System.exit(0);
 		}
-					
+		
+		
 		turnColor = turnColor.opposite();
 		selectedRow = -1;
 		selectedCol = -1;

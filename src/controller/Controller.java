@@ -20,6 +20,11 @@ public class Controller {
 		
 		pawn.setPosition(toRow, toCol);
 		pawn.setHasMoved(true);
+		
+		if(pawn instanceof Soldier) {
+			Soldier soldier = (Soldier) pawn;
+			soldier.incrementMoveCount();
+		}
 	}
 	
 	public static void makeCastlingMove(Board board, King king, boolean isKingSide) {

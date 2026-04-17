@@ -3,8 +3,20 @@ package pawn;
 import board.*;
 
 public class Soldier extends Pawn {
+	
+	protected int moveCount;
+	
 	public Soldier(int row, int col, PawnColor color) {
 		super(row, col, color);
+		this.moveCount = 0;
+	}
+	
+	public int getMoveCount() {
+		return moveCount;
+	}
+	
+	public void incrementMoveCount() {
+		moveCount++;
 	}
 	
     @Override
