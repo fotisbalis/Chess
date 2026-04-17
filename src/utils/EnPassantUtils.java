@@ -5,35 +5,42 @@ import board.*;
 
 public class EnPassantUtils {
 	
-	public static boolean canEnPassantHappen(Board board, Soldier defender, Soldier attacker, boolean lastMove) {
+	public static boolean canEnPassantHappen(Board board, Soldier defender) {
 		
-		PawnColor defenderColor = defender.getColor();
-		PawnColor attackerColor = attacker.getColor();
-		
-		int row = defenderColor.equals(PawnColor.WHITE) ? 4 : 5;
-		int targetRow = defenderColor.equals(PawnColor.WHITE) ? 3 : 6;
-		int targetCol = defender.getCol();
-		
-		// 1st rule: different colors
-		if(defenderColor.equals(attackerColor))
+		if(!MovesUtils.wasDoubleSquareSoldierMove(board, defender))
 			return false;
 		
-		// 2nd rule: defender must have made only one move and it should have been on the previous turn
-		if(defender.getMoveCount() != 1 || !lastMove)
+		Pawn rightAttacker, leftAttacker;
+		
+		if(defender.getCol() == 0) {
+			rightAttacker = board.getPawn(defender.getRow(), defender.getCol() + 1);
+			
+			return EnPassantUtils.isAttackerValid(board, defender, rightAttacker);
+		}
+		
+		else if(defender.getCol() == 7) {
+			leftAttacker = board.getPawn(defender.getRow(), defender.getCol() - 1);
+			
+			return EnPassantUtils.isAttackerValid(board, defender, leftAttacker);
+		}
+		
+		leftAttacker = board.getPawn(defender.getRow(), defender.getCol() - 1);
+		rightAttacker = board.getPawn(defender.getRow(), defender.getCol() + 1);
+		
+		return EnPassantUtils.isAttackerValid(board, defender, leftAttacker) || EnPassantUtils.isAttackerValid(board, defender, rightAttacker);
+	}
+	
+	private static boolean isAttackerValid(Board board, Soldier defender, Pawn attacker) {
+		
+		if(attacker == null)
 			return false;
 		
-		// 3rd rule: defender must have just made a 2 square move
-		if(defender.getRow() != row)
-			return false;
+		if(defender.getColor() == attacker.getColor())
+	        return false;
 		
-		// 4th rule: attacker must be on same row and one column away
-		if(attacker.getRow() != row || (attacker.getCol() != defender.getCol() - 1 && attacker.getCol() != defender.getCol() + 1))
-			return false;
-		
-		// 5th rule: the square that the attacker is about to move to must be empty
-		if(board.getPawn(targetRow, targetCol) != null)
-			return false;
-		
+		if(!(attacker instanceof Soldier))
+			return false;    		
+	    
 		return true;
 	}
 
@@ -47,6 +54,9 @@ public class EnPassantUtils {
 		int row = attacker.getRow(); 
 		int col = isRightSide ? attacker.getCol() + 1 : attacker.getCol() - 1;
 		
+		if(col < 0 || col > 7)
+			return null;
+		
 		Pawn defender = board.getPawn(row, col);
 		
 		if(!(defender instanceof Soldier))
@@ -56,21 +66,7 @@ public class EnPassantUtils {
 	}
 	
 	public static boolean isMoveEnPassant(Board board, Soldier attacker, int toRow, int toCol) {
-		
-		boolean isRightSide = EnPassantUtils.isRightSideEnPassant(attacker.getCol(), toCol);
-		
-		Soldier defender = EnPassantUtils.getDefender(board, attacker, isRightSide);
-		Pawn target = board.getPawn(toRow, toCol);
-		
-		if(target != null)
-			return false;
-		
-		if(defender == null)
-			return false;
-		
-		if(defender.getColor() == attacker.getColor())
-			return false;
-		
+
 		if(Math.abs(toCol - attacker.getCol()) != 1)
 	        return false;
 		
@@ -78,8 +74,22 @@ public class EnPassantUtils {
 
 	    if(toRow != expectedRow)
 	        return false;
+	    
+	    if(board.getPawn(toRow, toCol) != null)
+			return false;
+		
+		boolean isRightSide = EnPassantUtils.isRightSideEnPassant(attacker.getCol(), toCol);
+		Soldier defender = EnPassantUtils.getDefender(board, attacker, isRightSide);
+		
+		if(defender == null)
+			return false;
+		
+		if(defender.getColor() == attacker.getColor())
+			return false;
 		
 		return true;
 	}
+	
+	
 	
 }

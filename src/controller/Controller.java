@@ -40,6 +40,15 @@ public class Controller {
 		Controller.makeMove(board, rook, row, newRookCol);			
 	}
 
+	public static void makeEnPassantMove(Board board, Soldier attacker, int toRow, int toCol) {
+		
+		int capturedRow = attacker.getRow();
+		int capturedCol = toCol;
+		
+		Controller.makeMove(board, attacker, toRow, toCol);
+		board.setPawn(capturedRow, capturedCol, null);
+	}
+	
 	public static boolean isGameOver(Board board, PawnColor turnColor, ArrayList<BoardState> BoardStates, int halfMoveCounter) {
 		
 		if(GameCheckUtils.checkMateWinner(board, turnColor.opposite()) != null ||

@@ -1,14 +1,19 @@
 package pawn;
 
 import board.*;
+import utils.*;
 
 public class Soldier extends Pawn {
 	
 	protected int moveCount;
+	protected int startingRow;
+	protected int startingCol;
 	
 	public Soldier(int row, int col, PawnColor color) {
 		super(row, col, color);
 		this.moveCount = 0;
+		this.startingRow = row;
+		this.startingCol = col;
 	}
 	
 	public int getMoveCount() {
@@ -18,6 +23,15 @@ public class Soldier extends Pawn {
 	public void incrementMoveCount() {
 		moveCount++;
 	}
+	
+	public int getStartingRow() {
+		return startingRow;
+	}
+	
+	public int getStartingCol() {
+		return startingCol;
+	}
+	
 	
     @Override
     public PawnType getPawnType() {
@@ -30,50 +44,43 @@ public class Soldier extends Pawn {
     		return false;
     	
     	Pawn target = board.getPawn(newRow, newCol);
-    	boolean isFirstMove = !hasMoved();
     	
-    	if(color == PawnColor.WHITE) {
-    		if(isFirstMove) {
-    			if(newCol == col && (newRow == (row - 1) || newRow == (row - 2)) && target == null) {
-    				return true;
-    			}
-    			else if((newCol == (col + 1) || newCol == (col - 1)) && newRow == (row - 1) && target != null) {
-    				if(target.getColor() == PawnColor.BLACK) {
-    					return true;
-    				}    				
-    			}
-    		}
+    	if(newCol == col && target == null) {
+    		
+    		if(color == PawnColor.WHITE) {
+    	        
+    			if(newRow == row - 1)
+    	            return true;
+
+    	        if(!hasMoved() && newRow == row - 2 && MovesUtils.isSameColumnValidMove(board, row, newRow, col))
+    	            return true;
+    	    }
+    	    
     		else {
-    			if(newCol == col && newRow == (row - 1) && target == null) {
-    				return true;
-    			}
-    			else if((newCol == (col + 1) || newCol == (col - 1)) && newRow == (row - 1) && target != null) {
-    				if(target.getColor() == PawnColor.BLACK) {
-    					return true;
-    				}    				
-    			}
-    		}
+    	        
+    			if(newRow == row + 1)
+    	            return true;
+
+    	        if(!hasMoved() && newRow == row + 2 && MovesUtils.isSameColumnValidMove(board, row, newRow, col))
+    	            return true;
+    	    }    		
     	}
-    	else {
-    		if(isFirstMove) {
-    			if(newCol == col && (newRow == (row + 1) || newRow == (row + 2)) && target == null) {
+    	
+    	else if(Math.abs(newCol - col) == 1) {
+    		
+    		if(target != null) {
+    			
+    			if(color == PawnColor.WHITE && newRow == (row - 1) && target.getColor() == PawnColor.BLACK)
     				return true;
-    			}
-    			else if((newCol == (col + 1) || newCol == (col - 1)) && newRow == (row + 1) && target != null) {
-    				if(target.getColor() == PawnColor.WHITE) {
-    					return true;
-    				}    				
-    			}
+    			
+    			if(color == PawnColor.BLACK && newRow == (row + 1) && target.getColor() == PawnColor.WHITE)
+    				return true;
     		}
+    		
     		else {
-    			if(newCol == col && newRow == (row + 1) && target == null) {
-    				return true;
-    			}
-    			else if((newCol == (col + 1) || newCol == (col - 1)) && newRow == (row + 1) && target != null) {
-    				if(target.getColor() == PawnColor.WHITE) {
-    					return true;
-    				}    				
-    			}
+    			
+    			if(EnPassantUtils.isMoveEnPassant(board, this, newRow, newCol))
+    		        return true;
     		}
     	}
     	

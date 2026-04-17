@@ -155,4 +155,21 @@ public class MovesUtils {
 	    return true;
 	}
 	
+	public static boolean wasDoubleSquareSoldierMove(Board board, Soldier soldier) {
+		
+		if(soldier == null)
+			return false;
+		
+		if(soldier.getMoveCount() != 1)
+			return false;
+		
+		if(Math.abs(soldier.getStartingRow() - soldier.getRow()) != 2)
+			return false;
+		
+		if(soldier.getStartingCol() != soldier.getCol())
+			return false;
+		
+		return true;
+	}
+	
 }

@@ -24,6 +24,7 @@ public class ChessPanel extends JPanel {
 	private ArrayList<Pawn> captured = new ArrayList<Pawn>();
 	private ArrayList<BoardState> BoardStates = new ArrayList<BoardState>();
 	private int halfMoveCounter = 0;
+	private boolean isEnPassantSituation = false;
 	
 	private Color backgroundColor = new Color(200, 200, 100);
 	
@@ -137,7 +138,6 @@ public class ChessPanel extends JPanel {
 		//Case 4: Player has chosen pawn and makes valid move
 		Pawn target = board.getPawn(row, col);
 		
-		
 		if(target != null) {	
 			captured.add(target);
 			halfMoveCounter = 0;
@@ -148,10 +148,23 @@ public class ChessPanel extends JPanel {
 			halfMoveCounter++;
 		
 		
-		if(selectedPawn instanceof King && CastlingUtils.isMoveCastling((King) selectedPawn, row, col))
+		if(isEnPassantSituation && selectedPawn instanceof Soldier && EnPassantUtils.isMoveEnPassant(board, (Soldier) selectedPawn, row, col)) {
+			Pawn capturedPawn = board.getPawn(selectedPawn.getRow(), col);
+			
+			captured.add(capturedPawn);
+			
+			Controller.makeEnPassantMove(board, (Soldier) selectedPawn, row, col);
+		}
+		else if(selectedPawn instanceof King && CastlingUtils.isMoveCastling((King) selectedPawn, row, col))
 			Controller.makeCastlingMove(board, (King) selectedPawn, CastlingUtils.isKingsideCastling(selectedPawn.getCol(), col));
 		else
 			Controller.makeMove(board, selectedPawn,  row, col);
+		
+		
+		if(selectedPawn instanceof Soldier && EnPassantUtils.canEnPassantHappen(board, (Soldier) selectedPawn))
+			isEnPassantSituation = true;
+		else
+			isEnPassantSituation = false;
 		
 		
 		GUIUtils.refreshGUIBoard(board, squares);
