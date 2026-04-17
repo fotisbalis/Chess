@@ -37,7 +37,7 @@ public class Controller {
 
 	public static boolean isGameOver(Board board, PawnColor turnColor, ArrayList<BoardState> BoardStates, int halfMoveCounter) {
 		
-		if(GameCheckUtils.kingCapturedWinner(board) != null || GameCheckUtils.checkMateWinner(board, turnColor.opposite()) != null ||
+		if(GameCheckUtils.checkMateWinner(board, turnColor.opposite()) != null ||
 				GameCheckUtils.isThreefoldRepetition(BoardStates) || GameCheckUtils.is50MoveRule(halfMoveCounter) ||
 				GameCheckUtils.isStaleMate(board, turnColor) || GameCheckUtils.isInsufficientMaterial(board))
 			return true;

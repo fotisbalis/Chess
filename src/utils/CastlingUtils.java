@@ -5,9 +5,16 @@ import pawn.*;
 
 public class CastlingUtils {
 	
-	public static boolean canCastlingHappen(Board board, PawnColor turnColor, King king, Rook rook, int kingTargetCol) {
+	public static boolean canCastlingHappen(Board board, King king, int kingTargetCol) {
 		
-		int stepCastlingDirection = CastlingUtils.isKingsideCastling(king.getCol(), kingTargetCol) ? 1 : -1;
+		Boolean isKingSide = CastlingUtils.isKingsideCastling(king.getCol(), kingTargetCol);
+		
+		PawnColor turnColor = king.getColor();
+		
+		Rook rook = CastlingUtils.getRook(board, king, isKingSide);
+		if(rook == null) return false;
+		
+		int stepCastlingDirection = isKingSide ? 1 : -1;
 		int row = king.getRow();
 		
 		// 1st rule: King and Rook should not have moved
@@ -15,7 +22,7 @@ public class CastlingUtils {
 			return false;
 		
 		// 2nd rule: Squares between King and Rook must be empty
-		if(!MovesUtils.isSameRowValidMove(board, rook.getCol(), row, king.getCol() - stepCastlingDirection))
+		if(!MovesUtils.isSameRowValidMove(board, rook.getCol(), row, king.getCol() + stepCastlingDirection))
 			return false;
 		
 		// 3rd rule: King must not currently be in check
@@ -23,8 +30,8 @@ public class CastlingUtils {
 			return false;
 		
 		// 4th rule: The square that the King will pass through and the destination square must not be in check
-		if(!MovesUtils.isLegalMove(board, king, row, king.getCol() + stepCastlingDirection) ||
-				!MovesUtils.isLegalMove(board, king, row, kingTargetCol))
+		if(CastlingUtils.isSquareInDanger(board, turnColor, row, king.getCol() + stepCastlingDirection) ||
+				CastlingUtils.isSquareInDanger(board, turnColor, row, kingTargetCol))
 			return false;
 		
 		return true;
@@ -59,5 +66,23 @@ public class CastlingUtils {
 		return null;	
 	}
 	
-
+	public static boolean isSquareInDanger(Board board, PawnColor color, int row, int col) {
+		int r, c;
+			
+		for(r = 0; r < 8; r++) {
+			for(c = 0; c < 8; c++) {
+				
+				Pawn pawn = board.getPawn(r, c);
+				
+				if(pawn != null && pawn.getColor() != color) {
+					boolean validMoves[][] = MovesUtils.possibleMoves(board, pawn);
+					
+					if(validMoves[row][col])
+						return true;
+				}
+			}
+		}
+		
+		return false;
+	}
 }

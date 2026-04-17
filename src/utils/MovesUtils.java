@@ -83,6 +83,14 @@ public class MovesUtils {
 
 		if(!pawn.isValidMove(board, toRow, toCol))
 			return false;
+		
+		if(pawn instanceof King) {
+			King king = (King) pawn;
+			
+			if(CastlingUtils.isMoveCastling(king, toRow, toCol)) {
+				return CastlingUtils.canCastlingHappen(board, king, toCol);
+			}
+		}
 
 		Board tmpBoard = MovesUtils.simulateMove(board, pawn, toRow, toCol);
 

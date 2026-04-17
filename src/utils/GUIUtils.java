@@ -169,11 +169,7 @@ public class GUIUtils {
 		
 		String winner;
 		
-		if(Controller.isGameOver(board, turnColor, BoardStates, halfMoveCounter)) {
-			winner = GameCheckUtils.kingCapturedWinner(board);
-			if(winner != null)
-				return "King captured! " + winner + " wins!";
-			
+		if(Controller.isGameOver(board, turnColor, BoardStates, halfMoveCounter)) {			
 			winner = GameCheckUtils.checkMateWinner(board, turnColor.opposite());
 			if(winner != null)
 				return "Checkmate! " + winner + " wins!";

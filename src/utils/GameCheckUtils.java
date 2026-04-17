@@ -9,20 +9,6 @@ import controller.Controller;
 
 public class GameCheckUtils {
 	
-	public static String kingCapturedWinner(Board board) {
-		
-		King whiteKing = KingCheckUtils.findKing(board, PawnColor.WHITE);		
-		King blackKing = KingCheckUtils.findKing(board, PawnColor.BLACK);
-		
-		if(whiteKing == null)
-			return "Black";
-		
-		if(blackKing == null)
-			return "White";
-		
-		return null;
-	}
-	
 	public static String checkMateWinner(Board board, PawnColor turnColor) {
 		
 		if (KingCheckUtils.isKingInDanger(board, turnColor) && !(MovesUtils.hasLegalMoves(board, turnColor)))
