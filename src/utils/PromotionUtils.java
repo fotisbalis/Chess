@@ -57,21 +57,21 @@ public class PromotionUtils {
 		}
 	}
 	
-	private static void makePromotion(Board board, Soldier soldier, Pawn returningPawn) {
+	private static void makePromotion(Board board, Soldier soldier, Pawn newPawn) {
 		
 		int row = soldier.getRow(), col = soldier.getCol();
 		PawnColor color = soldier.getColor();
 		
-		if(returningPawn instanceof Queen)
+		if(newPawn instanceof Queen)
 			board.setPawn(row, col, new Queen(row, col, color));
 		
-		else if(returningPawn instanceof Bishop)
+		else if(newPawn instanceof Bishop)
 			board.setPawn(row, col, new Bishop(row, col, color));
 		
-		else if(returningPawn instanceof Knight)
+		else if(newPawn instanceof Knight)
 			board.setPawn(row, col, new Knight(row, col, color));
 		
-		else if(returningPawn instanceof Rook)
+		else if(newPawn instanceof Rook)
 			board.setPawn(row, col, new Rook(row, col, color));
 	}
 	
