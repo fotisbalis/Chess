@@ -1,7 +1,5 @@
 package utils;
 
-import java.util.ArrayList;
-
 import board.*;
 import controller.Controller;
 import pawn.*;

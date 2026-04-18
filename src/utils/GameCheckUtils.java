@@ -5,7 +5,6 @@ import pawn.*;
 import java.util.ArrayList;
 
 import board.*;
-import controller.Controller;
 
 public class GameCheckUtils {
 	

@@ -8,7 +8,7 @@ public class Board {
 	protected Pawn[][] board;
 	
 	public Board() {
-		this.board = new Pawn[8][8];		
+		this.board = new Pawn[8][8];
 	}
 	
 	public void initializeBoard() {

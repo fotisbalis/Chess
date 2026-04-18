@@ -6,8 +6,9 @@ import javax.swing.*;
 import java.awt.*;
 
 import board.*;
-import controller.Controller;
+import controller.*;
 import pawn.*;
+import view.*;
 
 public class GUIUtils {
 	
@@ -61,7 +62,7 @@ public class GUIUtils {
 		int r, c;
 		boolean[][] moves = MovesUtils.possibleLegalMoves(board, pawn);
 		
-		squares[pawn.getRow()][pawn.getCol()].setBackground(Color.ORANGE);
+		GUIUtils.highlightSelectedPawn(pawn, squares);
 		
 		for(r = 0; r < 8; r++) {
 			for(c = 0; c < 8; c++) {
@@ -71,6 +72,11 @@ public class GUIUtils {
 				
 			}
 		}
+	}
+	
+	public static void highlightSelectedPawn(Pawn pawn, JButton[][] squares) {
+		
+		squares[pawn.getRow()][pawn.getCol()].setBackground(Color.ORANGE);		
 	}
 	
 	public static void resetBoardColors(Board board, JButton[][] squares) {
@@ -188,6 +194,18 @@ public class GUIUtils {
 		}
 		
 		return null;
+	}
+	
+	public static void returnToMenu(Component parent, GUI gui) {
+		if(gui == null) {
+			return;
+		}
+		
+		int choice = JOptionPane.showConfirmDialog(parent, "Exit current game? Any unsaved progress will be lost.", "Return to Menu", JOptionPane.YES_NO_OPTION);
+		
+		if(choice == JOptionPane.YES_OPTION) {
+			gui.showStartScreen();
+		}
 	}
 	
 }

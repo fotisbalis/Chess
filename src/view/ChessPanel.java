@@ -2,8 +2,9 @@ package view;
 
 import pawn.*;
 import board.*;
-import controller.Controller;
+import controller.*;
 import utils.*;
+import save.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,34 +17,78 @@ public class ChessPanel extends JPanel {
 	private JPanel boardPanel = new JPanel(new GridLayout(8, 8));
 	private JPanel leftCaptured = new JPanel();
 	private JPanel rightCaptured = new JPanel();
+	private JPanel topPanel = new JPanel(new BorderLayout());
 	private JLabel turnLabel = new JLabel("White's Turn", SwingConstants.CENTER);
+	private JButton exitButton = new JButton("Exit Game");
+	private JButton saveButton = new JButton("Save Game");
+	private GUI gui;
 	
 	private Board board = new Board();
-	private PawnColor turnColor = PawnColor.WHITE;
+	private PawnColor turnColor;
 	private int selectedRow = -1, selectedCol = -1;
-	private ArrayList<Pawn> captured = new ArrayList<Pawn>();
-	private ArrayList<BoardState> BoardStates = new ArrayList<BoardState>();
-	private int halfMoveCounter = 0;
-	private boolean isEnPassantSituation = false;
+	private ArrayList<Pawn> captured;
+	private ArrayList<BoardState> boardStates;
+	private int halfMoveCounter;
+	private boolean isEnPassantSituation;
+	
+	GameState savedGameState;
 	
 	private Color backgroundColor = new Color(200, 200, 100);
+	private boolean highlightMoves;
 	
-	public ChessPanel() {
+	public ChessPanel(GUI gui, boolean highlightMoves) {
+		
+		this.gui = gui;
+		this.highlightMoves = highlightMoves;
 		
 		this.board.initializeBoard();
+		this.turnColor = PawnColor.WHITE;
+		this.halfMoveCounter = 0;
+		this.isEnPassantSituation = false;
+		this.captured = new ArrayList<Pawn>();
+		this.boardStates = new ArrayList<BoardState>();
+		
+		buildPanel();
+	}
+	
+	public ChessPanel(GUI gui, boolean highlightMoves, GameState savedGame) {
+		
+		this.gui = gui;
+		this.highlightMoves = highlightMoves;
+		
+		this.board = savedGame.getBoard();
+		this.turnColor = savedGame.getTurnColor();
+		this.halfMoveCounter = savedGame.getHalfMoveCounter();
+		this.isEnPassantSituation = savedGame.getEnPassantSituation();
+		this.captured = savedGame.getCaptured();
+		this.boardStates = savedGame.getBoardStates();
+		
+		buildPanel();
+	}
+	
+	private void saveGame() {
+		
+		savedGameState = new GameState(board, turnColor, halfMoveCounter, boardStates, captured, isEnPassantSituation);
+		
+		gui.setSavedGame(savedGameState);
+		
+	    JOptionPane.showMessageDialog(this, "Game saved.");
+	}
+	
+	public void buildPanel() {
 		
 		setLayout(new BorderLayout());
 
 		add(leftCaptured, BorderLayout.WEST);
 		add(boardPanel, BorderLayout.CENTER);
 		add(rightCaptured, BorderLayout.EAST);
-		add(turnLabel, BorderLayout.NORTH);
+		add(topPanel, BorderLayout.NORTH);
 		
 		boardPanel.setBackground(backgroundColor);
 		
 		leftCaptured.setLayout(new BoxLayout(leftCaptured, BoxLayout.Y_AXIS));
 		rightCaptured.setLayout(new BoxLayout(rightCaptured, BoxLayout.Y_AXIS));
-		turnLabel.setLayout(new BoxLayout(turnLabel, BoxLayout.Y_AXIS));
+		topPanel.setLayout(new BorderLayout());
 		
 		leftCaptured.setPreferredSize(new Dimension(100, 0));
 		rightCaptured.setPreferredSize(new Dimension(100, 0));
@@ -60,12 +105,26 @@ public class ChessPanel extends JPanel {
 		turnLabel.setOpaque(true);
 		turnLabel.setBackground(backgroundColor);
 		turnLabel.setForeground(Color.WHITE);
+
+		exitButton.setFont(new Font("Arial", Font.BOLD, 16));
+		exitButton.setFocusPainted(false);
+		exitButton.addActionListener(e -> GUIUtils.returnToMenu(this, gui));
+		
+		saveButton.setFont(new Font("Arial", Font.BOLD, 16));
+		saveButton.setFocusPainted(false);
+		saveButton.addActionListener(e -> saveGame());
+		
+		topPanel.setBackground(backgroundColor);
+		topPanel.add(turnLabel, BorderLayout.CENTER);
+		topPanel.add(exitButton, BorderLayout.WEST);
+		topPanel.add(saveButton, BorderLayout.EAST);
 		
 		intitializeGUIBoard();
 		GUIUtils.refreshGUIBoard(board, squares);
+		GUIUtils.updateTurnLabel(turnLabel, backgroundColor, turnColor);
 	}
 	
-	private void intitializeGUIBoard(){
+	private void intitializeGUIBoard() {
 		int row, col;
 		
 		for(row = 0; row < 8; row++) {
@@ -103,7 +162,10 @@ public class ChessPanel extends JPanel {
 			selectedRow = row;
 			selectedCol = col;
 			
-			GUIUtils.highlightPossibleMoves(board, clickedPawn, squares);
+			if(highlightMoves)
+				GUIUtils.highlightPossibleMoves(board, clickedPawn, squares);
+			else
+				GUIUtils.highlightSelectedPawn(clickedPawn, squares);
 			
 			return;
 		}
@@ -116,7 +178,10 @@ public class ChessPanel extends JPanel {
 			selectedRow = row;
 			selectedCol = col;
 			
-			GUIUtils.highlightPossibleMoves(board, clickedPawn, squares);
+			if(highlightMoves)
+				GUIUtils.highlightPossibleMoves(board, clickedPawn, squares);
+			else
+				GUIUtils.highlightSelectedPawn(clickedPawn, squares);
 			
 			return;
 		}
@@ -173,16 +238,15 @@ public class ChessPanel extends JPanel {
 		
 		PromotionUtils.handlePromotion(this, board, turnColor);
 
-		BoardStates.add(new BoardState(board, turnColor.opposite()));
+		boardStates.add(new BoardState(board, turnColor.opposite()));
 		
 		GUIUtils.refreshGUIBoard(board, squares);
 		GUIUtils.resetBoardColors(board, squares);
 		
-		if(Controller.isGameOver(board, turnColor, BoardStates, halfMoveCounter)) {
-			JOptionPane.showMessageDialog(this, GUIUtils.gameOverMessage(board, turnColor, BoardStates, halfMoveCounter));
-			System.exit(0);
+		if(Controller.isGameOver(board, turnColor, boardStates, halfMoveCounter)) {
+			JOptionPane.showMessageDialog(this, GUIUtils.gameOverMessage(board, turnColor, boardStates, halfMoveCounter));
+			gui.showStartScreen();
 		}
-		
 		
 		turnColor = turnColor.opposite();
 		selectedRow = -1;

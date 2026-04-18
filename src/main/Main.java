@@ -1,7 +1,5 @@
 package main;
 
-import pawn.*;
-import board.*;
 import view.*;
 
 public class Main {
