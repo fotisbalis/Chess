@@ -26,12 +26,22 @@ public class OptionsPanel extends JPanel {
         highlightMovesCheckBox.setFont(new Font("SansSerif", Font.BOLD, 16));
         highlightMovesCheckBox.addActionListener(e -> gui.setHighlightMoves(highlightMovesCheckBox.isSelected()));
 
+        JCheckBox autoQueenPromotionCheckBox = new JCheckBox("Automatic Queen Promotion");
+        autoQueenPromotionCheckBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+        autoQueenPromotionCheckBox.setSelected(gui.isAutoQueenPromotion());
+        autoQueenPromotionCheckBox.setOpaque(false);
+        autoQueenPromotionCheckBox.setForeground(new Color(240, 240, 240));
+        autoQueenPromotionCheckBox.setFont(new Font("SansSerif", Font.BOLD, 16));
+        autoQueenPromotionCheckBox.addActionListener(e -> gui.setAutoQueenPromotion(autoQueenPromotionCheckBox.isSelected()));
+        
         JButton backButton = createMenuButton("Back");
         backButton.addActionListener(e -> gui.showStartScreen());
 
         contentPanel.add(titleLabel);
         contentPanel.add(Box.createRigidArea(new Dimension(0, 40)));
         contentPanel.add(highlightMovesCheckBox);
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 24)));
+        contentPanel.add(autoQueenPromotionCheckBox);
         contentPanel.add(Box.createRigidArea(new Dimension(0, 24)));
         contentPanel.add(backButton);
 

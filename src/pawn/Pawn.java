@@ -1,8 +1,10 @@
 package pawn;
 
 import board.*;
+import java.io.Serializable;
 
-public abstract class Pawn {
+public abstract class Pawn implements Serializable {
+	private static final long serialVersionUID = 1L;
 	
 	protected int row, col;
 	protected PawnColor color;

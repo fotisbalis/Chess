@@ -22,7 +22,7 @@ public class PromotionUtils {
 		return pawnsForPromotion;
 	}
 
-	public static void handlePromotion(Component parent, Board board, PawnColor color) {
+	public static void handlePromotion(Component parent, Board board, PawnColor color, boolean autoQueenPromotion) {
 		
 		ArrayList<Pawn> pawnsForPromotion = PromotionUtils.getPawnsForPromotion(color);
 		
@@ -36,11 +36,19 @@ public class PromotionUtils {
 			
 			if(currentPawn instanceof Soldier && currentPawn.getColor() == color) {
 				
-				Pawn chosenPawn = GUIUtils.choosePawnForPromotion(parent, pawnsForPromotion);
+				Pawn chosenPawn;
 				
-				while(chosenPawn == null) {
-					JOptionPane.showMessageDialog(parent, "Promotion is mandatory. You have to choose a pawn.");
+				if(autoQueenPromotion) {
+					chosenPawn = new Queen(row, col, color);
+				}
+				
+				else {
 					chosenPawn = GUIUtils.choosePawnForPromotion(parent, pawnsForPromotion);
+					
+					while(chosenPawn == null) {
+						JOptionPane.showMessageDialog(parent, "Promotion is mandatory. You have to choose a pawn.");
+						chosenPawn = GUIUtils.choosePawnForPromotion(parent, pawnsForPromotion);
+					}
 				}
 				
 				PromotionUtils.makePromotion(board, (Soldier) currentPawn, chosenPawn);					

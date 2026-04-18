@@ -1,28 +1,33 @@
 package save;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import board.*;
 import pawn.*;
+import utils.*;
 
-public class GameState {
+public class GameState implements Serializable {
+	private static final long serialVersionUID = 1L;
 
-	protected int halfMoveCounter;
-	protected ArrayList<BoardState> boardStates;
-	protected BoardState boardState;
-	protected ArrayList<Pawn> captured;
-	protected boolean isEnPassantSituation;
+	private final int halfMoveCounter;
+	private final ArrayList<BoardState> boardStates;
+	private final BoardState boardState;
+	private final ArrayList<Pawn> captured;
+	private final boolean highlightMoves;
+	private final boolean autoQueenPromotion;
 	
-	public GameState(Board board, PawnColor turnColor, int halfMoveCounter, ArrayList<BoardState> boardStates, ArrayList<Pawn> captured, boolean isEnPassantSituation) {
+	public GameState(Board board, PawnColor turnColor, int halfMoveCounter, ArrayList<BoardState> boardStates, ArrayList<Pawn> captured, boolean highlightMoves, boolean autoQueenPromotion) {
 		this.boardState = new BoardState(board, turnColor);
-		this.boardStates = boardStates;
+		this.boardStates = GameStateUtils.copyBoardStates(boardStates);
 		this.halfMoveCounter = halfMoveCounter;
-		this.captured = captured;
-		this.isEnPassantSituation = isEnPassantSituation;
+		this.captured = GameStateUtils.copyCaptured(captured);
+		this.highlightMoves = highlightMoves;
+		this.autoQueenPromotion = autoQueenPromotion;
 	}
 	
 	public Board getBoard() {
-		return boardState.getBoard();
+		return boardState.getBoard().copyBoard();
 	}
 	
 	public PawnColor getTurnColor() {
@@ -30,7 +35,7 @@ public class GameState {
 	}
 	
 	public ArrayList<BoardState> getBoardStates() {
-		return boardStates;
+		return GameStateUtils.copyBoardStates(boardStates);
 	}
 	
 	public int getHalfMoveCounter() {
@@ -38,11 +43,16 @@ public class GameState {
 	}
 	
 	public ArrayList<Pawn> getCaptured() {
-		return captured;
+		return GameStateUtils.copyCaptured(captured);
 	}
 	
-	public boolean getEnPassantSituation() {
-		return isEnPassantSituation;
+	public boolean isHighlightMovesEnabled() {
+		return highlightMoves;
 	}
+
+	public boolean isAutoQueenPromotionEnabled() {
+		return autoQueenPromotion;
+	}
+	
 	
 }

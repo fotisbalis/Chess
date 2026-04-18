@@ -1,8 +1,11 @@
 package board;
 
+import java.io.Serializable;
+
 import pawn.PawnColor;
 
-public class BoardState {
+public class BoardState implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	Board board;
 	PawnColor turnColor;

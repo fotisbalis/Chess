@@ -208,4 +208,13 @@ public class GUIUtils {
 		}
 	}
 	
+	public static void exitToDesktop(Component parent) {
+		
+		int choice = JOptionPane.showConfirmDialog(parent, "Exit current game? Any unsaved progress will be lost.", "Quit to Desktop", JOptionPane.YES_NO_OPTION);
+		
+		if(choice == JOptionPane.YES_OPTION) {
+			System.exit(0);
+		}
+	}
+	
 }

@@ -1,10 +1,14 @@
 package board;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import pawn.*;
+import utils.GameStateUtils;
 
-public class Board {
+public class Board implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	protected Pawn[][] board;
 	protected int enPassantVulnerableRow;
 	protected int enPassantVulnerableCol;
@@ -103,45 +107,12 @@ public class Board {
 		
 		Board newBoard = new Board();
 		newBoard.setEnPassantVulnerableSquare(enPassantVulnerableRow, enPassantVulnerableCol);
+		
 		int r, c;
 		
 		for(r = 0; r < 8; r++) {
 			for(c = 0; c < 8; c++) {
-				Pawn pawn = getPawn(r, c);
-				
-				 if (pawn == null)
-					 newBoard.setPawn(r, c, null);
-				 
-				 else if (pawn instanceof King) {
-					 King newKing = new King(pawn.getRow(), pawn.getCol(), pawn.getColor());
-					 newKing.setHasMoved(pawn.hasMoved());
-					 newBoard.setPawn(r, c, newKing);
-				 }
-				 
-				 else if (pawn instanceof Queen)
-					 newBoard.setPawn(r, c, new Queen(pawn.getRow(), pawn.getCol(), pawn.getColor()));
-				 
-				 else if (pawn instanceof Rook) {
-					 Rook newRook = new Rook(pawn.getRow(), pawn.getCol(), pawn.getColor());
-					 newRook.setHasMoved(pawn.hasMoved());
-					 newBoard.setPawn(r, c, newRook);
-				 }
-				 
-				 else if (pawn instanceof Bishop)
-					 newBoard.setPawn(r, c, new Bishop(pawn.getRow(), pawn.getCol(), pawn.getColor()));
-				 
-				 else if (pawn instanceof Knight)
-					 newBoard.setPawn(r, c, new Knight(pawn.getRow(), pawn.getCol(), pawn.getColor()));
-		         
-				 else if (pawn instanceof Soldier) {
-					 Soldier oldSoldier = (Soldier) pawn;
-					 Soldier newSoldier = new Soldier(pawn.getRow(), pawn.getCol(), pawn.getColor());
-					 
-					 newSoldier.setHasMoved(oldSoldier.hasMoved());
-					 newSoldier.setMoveCount(oldSoldier.getMoveCount());
-					 
-					 newBoard.setPawn(r, c, newSoldier);
-				 }
+				newBoard.setPawn(r, c, GameStateUtils.copyPawn(getPawn(r, c)));
 			}
 		}
 		

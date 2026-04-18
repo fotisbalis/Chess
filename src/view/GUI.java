@@ -3,8 +3,8 @@ package view;
 import javax.swing.*;
 import java.awt.*;
 
-import board.*;
 import save.*;
+import utils.*;
 
 public class GUI extends JFrame {
     private static final String START_SCREEN = "start";
@@ -15,6 +15,7 @@ public class GUI extends JFrame {
     private final JPanel screenPanel = new JPanel(screenLayout);
     private ChessPanel chessPanel;
     private boolean highlightMoves = true;
+    private boolean autoQueenPromotion = false;
     
     private GameState savedGameState;
 
@@ -27,9 +28,13 @@ public class GUI extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
+        loadSettingsIfPresent();
+
         screenPanel.add(new StartPanel(this), START_SCREEN);
         screenPanel.add(new OptionsPanel(this), OPTIONS_SCREEN);
         add(screenPanel, BorderLayout.CENTER);
+
+        loadSavedGameIfPresent();
 
         showStartScreen();
         
@@ -50,6 +55,16 @@ public class GUI extends JFrame {
 
     public void setHighlightMoves(boolean highlightMoves) {
         this.highlightMoves = highlightMoves;
+        saveSettings();
+    }
+    
+    public boolean isAutoQueenPromotion() {
+    	return autoQueenPromotion;
+    }
+    
+    public void setAutoQueenPromotion(boolean autoQueenPromotion) {
+    	this.autoQueenPromotion = autoQueenPromotion;
+    	saveSettings();
     }
 
     public void showGameScreen() {
@@ -81,19 +96,64 @@ public class GUI extends JFrame {
     public void continueGame() {
     	
     	if(savedGameState == null) {
-            JOptionPane.showMessageDialog(this, "No saved game found.");
-            return;
+    		loadSavedGameIfPresent();
+    	}
+
+    	if(savedGameState == null) {
+    		JOptionPane.showMessageDialog(this, "No saved game found.");
+    		return;
         }
     	
     	if(chessPanel != null) {
             screenPanel.remove(chessPanel);
         }
     	
-    	chessPanel = new ChessPanel(this, highlightMoves, savedGameState);
+        chessPanel = new ChessPanel(this, highlightMoves, savedGameState);
         screenPanel.add(chessPanel, GAME_SCREEN);
         screenPanel.revalidate();
         screenPanel.repaint();
         screenLayout.show(screenPanel, GAME_SCREEN);    	
+    }
+
+    private void loadSavedGameIfPresent() {
+    	
+    	if(!SaveLoadUtils.saveExists()) {
+    		return;
+    	}
+
+    	try {
+    		savedGameState = SaveLoadUtils.loadGame();
+    		highlightMoves = savedGameState.isHighlightMovesEnabled();
+    		autoQueenPromotion = savedGameState.isAutoQueenPromotionEnabled();
+    	}
+    	catch(Exception e) {
+    		savedGameState = null;
+    	}
+    }
+
+    private void loadSettingsIfPresent() {
+    	if(!SaveLoadUtils.settingsExist()) {
+    		return;
+    	}
+
+    	try {
+    		UserSettings settings = SaveLoadUtils.loadSettings();
+    		highlightMoves = settings.isHighlightMovesEnabled();
+    		autoQueenPromotion = settings.isAutoQueenPromotionEnabled();
+    	}
+    	catch(Exception e) {
+    		highlightMoves = true;
+    		autoQueenPromotion = false;
+    	}
+    }
+
+    private void saveSettings() {
+    	try {
+    		SaveLoadUtils.saveSettings(new UserSettings(highlightMoves, autoQueenPromotion));
+    	}
+    	catch(Exception e) {
+    		// Keep the current in-memory settings even if persisting them fails
+    	}
     }
 }
 

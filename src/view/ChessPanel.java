@@ -17,9 +17,10 @@ public class ChessPanel extends JPanel {
 	private JPanel boardPanel = new JPanel(new GridLayout(8, 8));
 	private JPanel leftCaptured = new JPanel();
 	private JPanel rightCaptured = new JPanel();
-	private JPanel topPanel = new JPanel(new BorderLayout());
+	private JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 4));
 	private JLabel turnLabel = new JLabel("White's Turn", SwingConstants.CENTER);
-	private JButton exitButton = new JButton("Exit Game");
+	private JButton exitMenuButton = new JButton("Exit to Menu");
+	private JButton exitDesktopButton = new JButton("Exit to Desktop");
 	private JButton saveButton = new JButton("Save Game");
 	private GUI gui;
 	
@@ -29,9 +30,6 @@ public class ChessPanel extends JPanel {
 	private ArrayList<Pawn> captured;
 	private ArrayList<BoardState> boardStates;
 	private int halfMoveCounter;
-	private boolean isEnPassantSituation;
-	
-	GameState savedGameState;
 	
 	private Color backgroundColor = new Color(200, 200, 100);
 	private boolean highlightMoves;
@@ -44,9 +42,9 @@ public class ChessPanel extends JPanel {
 		this.board.initializeBoard();
 		this.turnColor = PawnColor.WHITE;
 		this.halfMoveCounter = 0;
-		this.isEnPassantSituation = this.board.hasEnPassantVulnerableSquare();
 		this.captured = new ArrayList<Pawn>();
 		this.boardStates = new ArrayList<BoardState>();
+		this.boardStates.add(new BoardState(board, turnColor));
 		
 		buildPanel();
 	}
@@ -54,12 +52,13 @@ public class ChessPanel extends JPanel {
 	public ChessPanel(GUI gui, boolean highlightMoves, GameState savedGame) {
 		
 		this.gui = gui;
-		this.highlightMoves = highlightMoves;
+		this.highlightMoves = savedGame.isHighlightMovesEnabled();
+		this.gui.setHighlightMoves(savedGame.isHighlightMovesEnabled());
+		this.gui.setAutoQueenPromotion(savedGame.isAutoQueenPromotionEnabled());
 		
 		this.board = savedGame.getBoard();
 		this.turnColor = savedGame.getTurnColor();
 		this.halfMoveCounter = savedGame.getHalfMoveCounter();
-		this.isEnPassantSituation = this.board.hasEnPassantVulnerableSquare();
 		this.captured = savedGame.getCaptured();
 		this.boardStates = savedGame.getBoardStates();
 		
@@ -67,12 +66,16 @@ public class ChessPanel extends JPanel {
 	}
 	
 	private void saveGame() {
+		GameState savedGameState = new GameState(board, turnColor, halfMoveCounter, boardStates, captured, highlightMoves, gui.isAutoQueenPromotion());
 		
-		savedGameState = new GameState(board, turnColor, halfMoveCounter, boardStates, captured, isEnPassantSituation);
-		
-		gui.setSavedGame(savedGameState);
-		
-	    JOptionPane.showMessageDialog(this, "Game saved.");
+		try {
+			SaveLoadUtils.saveGame(savedGameState);
+			gui.setSavedGame(savedGameState);
+			JOptionPane.showMessageDialog(this, "Game saved.");
+		}
+		catch(Exception e) {
+			JOptionPane.showMessageDialog(this, "Game could not be saved.");
+		}
 	}
 	
 	public void buildPanel() {
@@ -82,22 +85,25 @@ public class ChessPanel extends JPanel {
 		add(leftCaptured, BorderLayout.WEST);
 		add(boardPanel, BorderLayout.CENTER);
 		add(rightCaptured, BorderLayout.EAST);
-		add(topPanel, BorderLayout.NORTH);
+		add(turnLabel, BorderLayout.NORTH);
+		add(bottomPanel, BorderLayout.SOUTH);
 		
 		boardPanel.setBackground(backgroundColor);
 		
 		leftCaptured.setLayout(new BoxLayout(leftCaptured, BoxLayout.Y_AXIS));
 		rightCaptured.setLayout(new BoxLayout(rightCaptured, BoxLayout.Y_AXIS));
-		topPanel.setLayout(new BorderLayout());
+		bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 12, 4));
 		
 		leftCaptured.setPreferredSize(new Dimension(100, 0));
 		rightCaptured.setPreferredSize(new Dimension(100, 0));
 		
 		leftCaptured.setOpaque(true);
 		rightCaptured.setOpaque(true);
+		bottomPanel.setOpaque(true);
 
 		leftCaptured.setBackground(backgroundColor);
 		rightCaptured.setBackground(backgroundColor);
+		bottomPanel.setBackground(backgroundColor);
 		
 		turnLabel.setPreferredSize(new Dimension(100, 50));			
 		turnLabel.setFont(new Font("Arial", Font.BOLD, 24));
@@ -106,21 +112,28 @@ public class ChessPanel extends JPanel {
 		turnLabel.setBackground(backgroundColor);
 		turnLabel.setForeground(Color.WHITE);
 
-		exitButton.setFont(new Font("Arial", Font.BOLD, 16));
-		exitButton.setFocusPainted(false);
-		exitButton.addActionListener(e -> GUIUtils.returnToMenu(this, gui));
+		exitMenuButton.setFont(new Font("Arial", Font.BOLD, 16));
+		exitMenuButton.setFocusPainted(false);
+		exitMenuButton.setMargin(new Insets(2, 10, 2, 10));
+		exitMenuButton.addActionListener(e -> GUIUtils.returnToMenu(this, gui));
+		
+		exitDesktopButton.setFont(new Font("Arial", Font.BOLD, 16));
+		exitDesktopButton.setFocusPainted(false);
+		exitDesktopButton.setMargin(new Insets(2, 10, 2, 10));
+		exitDesktopButton.addActionListener(e -> GUIUtils.exitToDesktop(this));
 		
 		saveButton.setFont(new Font("Arial", Font.BOLD, 16));
 		saveButton.setFocusPainted(false);
+		saveButton.setMargin(new Insets(2, 10, 2, 10));
 		saveButton.addActionListener(e -> saveGame());
 		
-		topPanel.setBackground(backgroundColor);
-		topPanel.add(turnLabel, BorderLayout.CENTER);
-		topPanel.add(exitButton, BorderLayout.WEST);
-		topPanel.add(saveButton, BorderLayout.EAST);
+		bottomPanel.add(exitMenuButton);
+		bottomPanel.add(exitDesktopButton);
+		bottomPanel.add(saveButton);
 		
 		intitializeGUIBoard();
 		GUIUtils.refreshGUIBoard(board, squares);
+		GUIUtils.updateCapturedPawns(captured, leftCaptured, rightCaptured);
 		GUIUtils.updateTurnLabel(turnLabel, backgroundColor, turnColor);
 	}
 	
@@ -225,14 +238,11 @@ public class ChessPanel extends JPanel {
 		else
 			Controller.makeMove(board, selectedPawn,  row, col);
 		
-		
-		isEnPassantSituation = board.hasEnPassantVulnerableSquare();
-		
 		GUIUtils.refreshGUIBoard(board, squares);
 		GUIUtils.updateCapturedPawns(captured, leftCaptured, rightCaptured);
 		GUIUtils.resetBoardColors(board, squares);
 		
-		PromotionUtils.handlePromotion(this, board, turnColor);
+		PromotionUtils.handlePromotion(this, board, turnColor, gui.isAutoQueenPromotion());
 
 		boardStates.add(new BoardState(board, turnColor.opposite()));
 		

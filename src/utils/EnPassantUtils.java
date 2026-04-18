@@ -5,9 +5,12 @@ import board.*;
 
 public class EnPassantUtils {
 	
-	public static boolean canEnPassantHappen(Board board, Soldier defender) {
-		if(defender == null)
+	public static boolean canEnPassantHappen(Board board, Pawn pawn) {
+		
+		if(pawn == null || !(pawn instanceof Soldier))
 			return false;
+		
+		Soldier defender = (Soldier) pawn;
 		
 		if(!board.isEnPassantVulnerableSquare(defender.getRow(), defender.getCol()))
 			return false;
@@ -15,7 +18,7 @@ public class EnPassantUtils {
 		if(!MovesUtils.wasDoubleSquareSoldierMove(board, defender))
 			return false;
 		
-		Pawn rightAttacker, leftAttacker;
+		Pawn rightAttacker, leftAttacker; 
 		
 		if(defender.getCol() == 0) {
 			rightAttacker = board.getPawn(defender.getRow(), defender.getCol() + 1);
