@@ -6,6 +6,11 @@ import board.*;
 public class EnPassantUtils {
 	
 	public static boolean canEnPassantHappen(Board board, Soldier defender) {
+		if(defender == null)
+			return false;
+		
+		if(!board.isEnPassantVulnerableSquare(defender.getRow(), defender.getCol()))
+			return false;
 		
 		if(!MovesUtils.wasDoubleSquareSoldierMove(board, defender))
 			return false;

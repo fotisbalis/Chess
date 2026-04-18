@@ -6,9 +6,13 @@ import pawn.*;
 
 public class Board {
 	protected Pawn[][] board;
+	protected int enPassantVulnerableRow;
+	protected int enPassantVulnerableCol;
 	
 	public Board() {
 		this.board = new Pawn[8][8];
+		this.enPassantVulnerableRow = -1;
+		this.enPassantVulnerableCol = -1;
 	}
 	
 	public void initializeBoard() {
@@ -58,6 +62,24 @@ public class Board {
 	public Pawn[][] getBoard() {
 		return board;
 	}
+
+	public void setEnPassantVulnerableSquare(int row, int col) {
+		this.enPassantVulnerableRow = row;
+		this.enPassantVulnerableCol = col;
+	}
+
+	public void clearEnPassantVulnerableSquare() {
+		this.enPassantVulnerableRow = -1;
+		this.enPassantVulnerableCol = -1;
+	}
+
+	public boolean isEnPassantVulnerableSquare(int row, int col) {
+		return enPassantVulnerableRow == row && enPassantVulnerableCol == col;
+	}
+
+	public boolean hasEnPassantVulnerableSquare() {
+		return enPassantVulnerableRow != -1 && enPassantVulnerableCol != -1;
+	}
 	
 	public ArrayList<Pawn> getPlayerPawns(PawnColor color) {
 		
@@ -80,6 +102,7 @@ public class Board {
 	public Board copyBoard() {
 		
 		Board newBoard = new Board();
+		newBoard.setEnPassantVulnerableSquare(enPassantVulnerableRow, enPassantVulnerableCol);
 		int r, c;
 		
 		for(r = 0; r < 8; r++) {
@@ -111,8 +134,12 @@ public class Board {
 					 newBoard.setPawn(r, c, new Knight(pawn.getRow(), pawn.getCol(), pawn.getColor()));
 		         
 				 else if (pawn instanceof Soldier) {
+					 Soldier oldSoldier = (Soldier) pawn;
 					 Soldier newSoldier = new Soldier(pawn.getRow(), pawn.getCol(), pawn.getColor());
-					 newSoldier.setHasMoved(pawn.hasMoved());		                
+					 
+					 newSoldier.setHasMoved(oldSoldier.hasMoved());
+					 newSoldier.setMoveCount(oldSoldier.getMoveCount());
+					 
 					 newBoard.setPawn(r, c, newSoldier);
 				 }
 			}

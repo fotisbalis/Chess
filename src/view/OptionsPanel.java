@@ -4,7 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class OptionsPanel extends JPanel {
-    public OptionsPanel(GUI gui) {
+    
+	public OptionsPanel(GUI gui) {
         setLayout(new GridBagLayout());
         setBackground(new Color(35, 35, 35));
 

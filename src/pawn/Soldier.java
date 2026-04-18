@@ -24,6 +24,10 @@ public class Soldier extends Pawn {
 		moveCount++;
 	}
 	
+	public void setMoveCount(int newMoveCount) {
+		moveCount = newMoveCount;
+	}
+	
 	public int getStartingRow() {
 		return startingRow;
 	}
@@ -79,7 +83,10 @@ public class Soldier extends Pawn {
     		
     		else {
     			
-    			if(EnPassantUtils.isMoveEnPassant(board, this, newRow, newCol))
+    			boolean isRightSide = EnPassantUtils.isRightSideEnPassant(col, newCol);
+    			Soldier defender = EnPassantUtils.getDefender(board, this, isRightSide);
+    			
+    			if(EnPassantUtils.isMoveEnPassant(board, this, newRow, newCol) && EnPassantUtils.canEnPassantHappen(board, defender))
     		        return true;
     		}
     	}

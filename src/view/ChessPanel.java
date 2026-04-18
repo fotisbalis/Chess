@@ -44,7 +44,7 @@ public class ChessPanel extends JPanel {
 		this.board.initializeBoard();
 		this.turnColor = PawnColor.WHITE;
 		this.halfMoveCounter = 0;
-		this.isEnPassantSituation = false;
+		this.isEnPassantSituation = this.board.hasEnPassantVulnerableSquare();
 		this.captured = new ArrayList<Pawn>();
 		this.boardStates = new ArrayList<BoardState>();
 		
@@ -59,7 +59,7 @@ public class ChessPanel extends JPanel {
 		this.board = savedGame.getBoard();
 		this.turnColor = savedGame.getTurnColor();
 		this.halfMoveCounter = savedGame.getHalfMoveCounter();
-		this.isEnPassantSituation = savedGame.getEnPassantSituation();
+		this.isEnPassantSituation = this.board.hasEnPassantVulnerableSquare();
 		this.captured = savedGame.getCaptured();
 		this.boardStates = savedGame.getBoardStates();
 		
@@ -213,7 +213,7 @@ public class ChessPanel extends JPanel {
 			halfMoveCounter++;
 		
 		
-		if(isEnPassantSituation && selectedPawn instanceof Soldier && EnPassantUtils.isMoveEnPassant(board, (Soldier) selectedPawn, row, col)) {
+		if(selectedPawn instanceof Soldier && EnPassantUtils.isMoveEnPassant(board, (Soldier) selectedPawn, row, col)) {
 			Pawn capturedPawn = board.getPawn(selectedPawn.getRow(), col);
 			
 			captured.add(capturedPawn);
@@ -226,11 +226,7 @@ public class ChessPanel extends JPanel {
 			Controller.makeMove(board, selectedPawn,  row, col);
 		
 		
-		if(selectedPawn instanceof Soldier && EnPassantUtils.canEnPassantHappen(board, (Soldier) selectedPawn))
-			isEnPassantSituation = true;
-		else
-			isEnPassantSituation = false;
-		
+		isEnPassantSituation = board.hasEnPassantVulnerableSquare();
 		
 		GUIUtils.refreshGUIBoard(board, squares);
 		GUIUtils.updateCapturedPawns(captured, leftCaptured, rightCaptured);

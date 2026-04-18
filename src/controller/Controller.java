@@ -14,6 +14,9 @@ public class Controller {
 	
 		int fromRow = pawn.getRow();
 		int fromCol = pawn.getCol();
+		boolean isDoubleSquareSoldierMove = pawn instanceof Soldier && fromCol == toCol && Math.abs(toRow - fromRow) == 2;
+
+		board.clearEnPassantVulnerableSquare();
 		
 		board.setPawn(toRow, toCol, pawn);
 		board.setPawn(fromRow, fromCol, null);
@@ -25,6 +28,9 @@ public class Controller {
 			Soldier soldier = (Soldier) pawn;
 			soldier.incrementMoveCount();
 		}
+
+		if(isDoubleSquareSoldierMove)
+			board.setEnPassantVulnerableSquare(toRow, toCol);
 	}
 	
 	public static void makeCastlingMove(Board board, King king, boolean isKingSide) {
