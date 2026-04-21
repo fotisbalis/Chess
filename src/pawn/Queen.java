@@ -14,6 +14,10 @@ public class Queen extends Pawn {
     	return PawnType.QUEEN;
     }
     
+    public int getPawnValue() {
+    	return 1000;
+    }
+    
     public boolean isValidMove(Board board, int newRow, int newCol) {
     	
     	if(newRow < 0 || newRow > 7 || newCol < 0 || newCol >7)

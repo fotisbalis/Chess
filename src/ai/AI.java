@@ -3,40 +3,33 @@ package ai;
 import java.util.ArrayList;
 
 import pawn.*;
-import utils.MovesUtils;
+import utils.*;
 import board.*;
 
 public class AI {
 
 	public static int[] chooseMove(Board board, PawnColor aiColor){
 		
-		ArrayList<int[]> legalMoves = new ArrayList<int[]>();
-
-	    for(Pawn pawn : board.getPlayerPawns(aiColor)) {
-	        boolean[][] possibleLegalMoves = MovesUtils.possibleLegalMoves(board, pawn);
-
-	        for(int row = 0; row < 8; row++) {
-	            for(int col = 0; col < 8; col++) {
-	                if(possibleLegalMoves[row][col]) {
-	                    legalMoves.add(new int[] {pawn.getRow(), pawn.getCol(), row, col});
-	                }
-	            }
-	        }
-	    }
-	    
+		ArrayList<int[]> legalMoves = AIUtils.legalMoves(board, aiColor);
+	    int max_score = Integer.MIN_VALUE;
+	    int[] best_move = null;
+		
 	    if(legalMoves.isEmpty()) {
 	        return null;
 	    }
 	    
 	    for(int[] move : legalMoves) {
-	    	Pawn target = board.getPawn(move[2], move[3]);
+	    	Pawn pawn = board.getPawn(move[0], move[1]);
+	    	Board tmpBoard = MovesUtils.simulateMove(board, pawn, move[2], move[3]);
 	    	
-	    	if(target != null)
-	    		return move;
+	    	int tmpBoardScore = AIUtils.boardScore(tmpBoard, aiColor);
+	    	if(tmpBoardScore > max_score) {
+	    		max_score = tmpBoardScore;
+	    		best_move = move;
+	    	}
 	    }
 	    
-	    int randomIndex = (int)(Math.random() * legalMoves.size());
-	    return legalMoves.get(randomIndex);
+	    return best_move;
 	}
 	
 }

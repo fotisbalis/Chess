@@ -13,6 +13,10 @@ public class King extends Pawn {
     	return PawnType.KING;
     }
     
+    public int getPawnValue() {
+    	return 20000;
+    }
+    
     public boolean isValidMove(Board board, int newRow, int newCol) {
     	
     	if(newRow < 0 || newRow > 7 || newCol < 0 || newCol >7)

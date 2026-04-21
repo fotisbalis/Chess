@@ -14,6 +14,10 @@ public class Bishop extends Pawn {
     	return PawnType.BISHOP;
     }
     
+    public int getPawnValue() {
+    	return 300;
+    }
+    
     public boolean isValidMove(Board board, int newRow, int newCol) {
     	
     	if(newRow < 0 || newRow > 7 || newCol < 0 || newCol >7)

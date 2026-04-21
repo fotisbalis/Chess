@@ -14,6 +14,10 @@ public class Rook extends Pawn {
     	return PawnType.ROOK;
     }
     
+    public int getPawnValue() {
+    	return 400;
+    }
+    
     public boolean isValidMove(Board board, int newRow, int newCol) {
     	
     	if(newRow < 0 || newRow > 7 || newCol < 0 || newCol >7)

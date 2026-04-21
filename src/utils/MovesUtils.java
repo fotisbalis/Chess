@@ -1,5 +1,7 @@
 package utils;
 
+import java.util.ArrayList;
+
 import board.*;
 import controller.Controller;
 import pawn.*;
@@ -44,7 +46,6 @@ public class MovesUtils {
 
 		return legalMoves;
 	}
-
 	
 	public static boolean hasLegalMoves(Board board, PawnColor color) {
 		

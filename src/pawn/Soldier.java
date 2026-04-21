@@ -42,6 +42,10 @@ public class Soldier extends Pawn {
     	return PawnType.SOLDIER;
     }
     
+    public int getPawnValue() {
+    	return 100;
+    }
+    
     public boolean isValidMove(Board board, int newRow, int newCol) {
     	
     	if(newRow < 0 || newRow > 7 || newCol < 0 || newCol >7)

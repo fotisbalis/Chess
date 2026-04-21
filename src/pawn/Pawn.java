@@ -48,6 +48,8 @@ public abstract class Pawn implements Serializable {
 	
 	public abstract PawnType getPawnType();
 	
+	public abstract int getPawnValue();
+	
 	public abstract boolean isValidMove(Board board, int newRow, int newCol);
 	
 }
