@@ -1,6 +1,9 @@
 package view;
 
 import javax.swing.*;
+
+import utils.GUIUtils;
+
 import java.awt.*;
 
 public class OptionsPanel extends JPanel {
@@ -19,19 +22,13 @@ public class OptionsPanel extends JPanel {
         titleLabel.setForeground(new Color(240, 240, 240));
 
         JCheckBox highlightMovesCheckBox = new JCheckBox("Highlight Posssible Moves");
-        highlightMovesCheckBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+        GUIUtils.initializeCheckBox(highlightMovesCheckBox);
         highlightMovesCheckBox.setSelected(gui.isHighlightMovesEnabled());
-        highlightMovesCheckBox.setOpaque(false);
-        highlightMovesCheckBox.setForeground(new Color(240, 240, 240));
-        highlightMovesCheckBox.setFont(new Font("SansSerif", Font.BOLD, 16));
         highlightMovesCheckBox.addActionListener(e -> gui.setHighlightMoves(highlightMovesCheckBox.isSelected()));
 
         JCheckBox autoQueenPromotionCheckBox = new JCheckBox("Automatic Queen Promotion");
-        autoQueenPromotionCheckBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+        GUIUtils.initializeCheckBox(autoQueenPromotionCheckBox);
         autoQueenPromotionCheckBox.setSelected(gui.isAutoQueenPromotion());
-        autoQueenPromotionCheckBox.setOpaque(false);
-        autoQueenPromotionCheckBox.setForeground(new Color(240, 240, 240));
-        autoQueenPromotionCheckBox.setFont(new Font("SansSerif", Font.BOLD, 16));
         autoQueenPromotionCheckBox.addActionListener(e -> gui.setAutoQueenPromotion(autoQueenPromotionCheckBox.isSelected()));
         
         JButton backButton = createMenuButton("Back");

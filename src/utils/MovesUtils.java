@@ -37,7 +37,7 @@ public class MovesUtils {
 				if(pawn.getRow() == r && pawn.getCol() == c)
 					continue;
 
-				if(isLegalMove(board, pawn, r, c))
+				if(MovesUtils.isLegalMove(board, pawn, r, c))
 					legalMoves[r][c] = true;
 			}
 		}

@@ -21,11 +21,11 @@ public class StartPanel extends JPanel {
         titleLabel.setFont(new Font("Serif", Font.BOLD, 44));
         titleLabel.setForeground(new Color(240, 240, 240));
 
-        JButton startButton = createMenuButton("Start New Game");
-        startButton.addActionListener(e -> gui.showGameScreen());
-        
-        JButton continueButton = createMenuButton("Continue Game");
-        continueButton.addActionListener(e -> gui.continueGame());
+        JButton singlePlayerButton = createMenuButton("Single Player Game");
+        singlePlayerButton.addActionListener(e -> gui.showSinglePlayerMenu());
+
+        JButton twoPlayerButton = createMenuButton("Two Player Game");
+        twoPlayerButton.addActionListener(e -> gui.showTwoPlayerMenu());
         
         JButton optionsButton = createMenuButton("Options");
         optionsButton.addActionListener(e -> gui.showOptionsScreen());
@@ -35,9 +35,9 @@ public class StartPanel extends JPanel {
 
         contentPanel.add(titleLabel);
         contentPanel.add(Box.createRigidArea(new Dimension(0, 40)));
-        contentPanel.add(startButton);
+        contentPanel.add(singlePlayerButton);
         contentPanel.add(Box.createRigidArea(new Dimension(0, 16)));
-        contentPanel.add(continueButton);
+        contentPanel.add(twoPlayerButton);
         contentPanel.add(Box.createRigidArea(new Dimension(0, 16)));
         contentPanel.add(optionsButton);
         contentPanel.add(Box.createRigidArea(new Dimension(0, 16)));

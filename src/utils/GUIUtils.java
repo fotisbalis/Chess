@@ -173,12 +173,11 @@ public class GUIUtils {
 	
 	public static String gameOverMessage(Board board, PawnColor turnColor, ArrayList<BoardState> BoardStates, int halfMoveCounter) {
 		
-		String winner;
-		
 		if(Controller.isGameOver(board, turnColor, BoardStates, halfMoveCounter)) {			
-			winner = GameCheckUtils.checkMateWinner(board, turnColor.opposite());
-			if(winner != null)
+			if(GameCheckUtils.isCheckMate(board, turnColor.opposite())) {
+				String winner = turnColor == PawnColor.WHITE ? "White" : "Black";
 				return "Checkmate! " + winner + " wins!";
+			}
 			
 			if(GameCheckUtils.isThreefoldRepetition(BoardStates))
 				return "Threefold Repetition. Tie game!";
@@ -201,7 +200,7 @@ public class GUIUtils {
 			return;
 		}
 		
-		int choice = JOptionPane.showConfirmDialog(parent, "Exit current game? Any unsaved progress will be lost.", "Return to Menu", JOptionPane.YES_NO_OPTION);
+		int choice = JOptionPane.showConfirmDialog(parent, "Exit current game? Any unsaved progress will be lost.", "Exit to Menu", JOptionPane.YES_NO_OPTION);
 		
 		if(choice == JOptionPane.YES_OPTION) {
 			gui.showStartScreen();
@@ -210,11 +209,27 @@ public class GUIUtils {
 	
 	public static void exitToDesktop(Component parent) {
 		
-		int choice = JOptionPane.showConfirmDialog(parent, "Exit current game? Any unsaved progress will be lost.", "Quit to Desktop", JOptionPane.YES_NO_OPTION);
+		int choice = JOptionPane.showConfirmDialog(parent, "Exit current game? Any unsaved progress will be lost.", "Exit to Desktop", JOptionPane.YES_NO_OPTION);
 		
 		if(choice == JOptionPane.YES_OPTION) {
 			System.exit(0);
 		}
+	}
+	
+	public static void initializeCheckBox(JCheckBox checkBox) {
+		
+		checkBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+        checkBox.setOpaque(false);
+        checkBox.setForeground(new Color(240, 240, 240));
+        checkBox.setFont(new Font("SansSerif", Font.BOLD, 16));
+	}
+	
+	public static void initializeButton(JButton button) {
+		
+		button.setFont(new Font("Arial", Font.BOLD, 16));
+		button.setFocusPainted(false);
+		button.setMargin(new Insets(2, 10, 2, 10));
+		
 	}
 	
 }

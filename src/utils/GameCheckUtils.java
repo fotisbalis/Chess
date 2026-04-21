@@ -8,12 +8,12 @@ import board.*;
 
 public class GameCheckUtils {
 	
-	public static String checkMateWinner(Board board, PawnColor turnColor) {
+	public static boolean isCheckMate(Board board, PawnColor turnColor) {
 		
 		if (KingCheckUtils.isKingInDanger(board, turnColor) && !(MovesUtils.hasLegalMoves(board, turnColor)))
-            return turnColor == PawnColor.WHITE ? "Black" : "White";
+            return true;
 		
-		return null;
+		return false;
 	}
 	
 	public static boolean isThreefoldRepetition(ArrayList<BoardState> BoardStates) {

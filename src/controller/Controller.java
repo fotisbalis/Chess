@@ -1,12 +1,10 @@
 package controller;
 
-import pawn.*;
-import utils.CastlingUtils;
-import utils.GameCheckUtils;
-
 import java.util.ArrayList;
 
+import pawn.*;
 import board.*;
+import utils.*;
 
 public class Controller {
 	
@@ -57,12 +55,13 @@ public class Controller {
 	
 	public static boolean isGameOver(Board board, PawnColor turnColor, ArrayList<BoardState> BoardStates, int halfMoveCounter) {
 		
-		if(GameCheckUtils.checkMateWinner(board, turnColor.opposite()) != null ||
+		if(GameCheckUtils.isCheckMate(board, turnColor.opposite()) ||
 				GameCheckUtils.isThreefoldRepetition(BoardStates) || GameCheckUtils.is50MoveRule(halfMoveCounter) ||
 				GameCheckUtils.isStaleMate(board, turnColor) || GameCheckUtils.isInsufficientMaterial(board))
 			return true;
 		
 		return false;
 	}
+	
 	
 }

@@ -5,6 +5,7 @@ import board.*;
 import controller.*;
 import utils.*;
 import save.*;
+import ai.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,11 +34,19 @@ public class ChessPanel extends JPanel {
 	
 	private Color backgroundColor = new Color(200, 200, 100);
 	private boolean highlightMoves;
+	private boolean singlePlayer;
+	private PawnColor aiColor = PawnColor.BLACK;
+	private boolean aiThinking = false;
 	
 	public ChessPanel(GUI gui, boolean highlightMoves) {
+		this(gui, highlightMoves, false);
+	}
+
+	public ChessPanel(GUI gui, boolean highlightMoves, boolean singlePlayer) {
 		
 		this.gui = gui;
 		this.highlightMoves = highlightMoves;
+		this.singlePlayer = singlePlayer;
 		
 		this.board.initializeBoard();
 		this.turnColor = PawnColor.WHITE;
@@ -50,9 +59,14 @@ public class ChessPanel extends JPanel {
 	}
 	
 	public ChessPanel(GUI gui, boolean highlightMoves, GameState savedGame) {
+		this(gui, highlightMoves, savedGame, false);
+	}
+
+	public ChessPanel(GUI gui, boolean highlightMoves, GameState savedGame, boolean singlePlayer) {
 		
 		this.gui = gui;
 		this.highlightMoves = savedGame.isHighlightMovesEnabled();
+		this.singlePlayer = singlePlayer;
 		this.gui.setHighlightMoves(savedGame.isHighlightMovesEnabled());
 		this.gui.setAutoQueenPromotion(savedGame.isAutoQueenPromotionEnabled());
 		
@@ -63,19 +77,7 @@ public class ChessPanel extends JPanel {
 		this.boardStates = savedGame.getBoardStates();
 		
 		buildPanel();
-	}
-	
-	private void saveGame() {
-		GameState savedGameState = new GameState(board, turnColor, halfMoveCounter, boardStates, captured, highlightMoves, gui.isAutoQueenPromotion());
-		
-		try {
-			SaveLoadUtils.saveGame(savedGameState);
-			gui.setSavedGame(savedGameState);
-			JOptionPane.showMessageDialog(this, "Game saved.");
-		}
-		catch(Exception e) {
-			JOptionPane.showMessageDialog(this, "Game could not be saved.");
-		}
+		startAITurnIfNeeded();
 	}
 	
 	public void buildPanel() {
@@ -112,19 +114,13 @@ public class ChessPanel extends JPanel {
 		turnLabel.setBackground(backgroundColor);
 		turnLabel.setForeground(Color.WHITE);
 
-		exitMenuButton.setFont(new Font("Arial", Font.BOLD, 16));
-		exitMenuButton.setFocusPainted(false);
-		exitMenuButton.setMargin(new Insets(2, 10, 2, 10));
+		GUIUtils.initializeButton(exitMenuButton);
 		exitMenuButton.addActionListener(e -> GUIUtils.returnToMenu(this, gui));
 		
-		exitDesktopButton.setFont(new Font("Arial", Font.BOLD, 16));
-		exitDesktopButton.setFocusPainted(false);
-		exitDesktopButton.setMargin(new Insets(2, 10, 2, 10));
+		GUIUtils.initializeButton(exitDesktopButton);
 		exitDesktopButton.addActionListener(e -> GUIUtils.exitToDesktop(this));
 		
-		saveButton.setFont(new Font("Arial", Font.BOLD, 16));
-		saveButton.setFocusPainted(false);
-		saveButton.setMargin(new Insets(2, 10, 2, 10));
+		GUIUtils.initializeButton(saveButton);
 		saveButton.addActionListener(e -> saveGame());
 		
 		bottomPanel.add(exitMenuButton);
@@ -135,6 +131,28 @@ public class ChessPanel extends JPanel {
 		GUIUtils.refreshGUIBoard(board, squares);
 		GUIUtils.updateCapturedPawns(captured, leftCaptured, rightCaptured);
 		GUIUtils.updateTurnLabel(turnLabel, backgroundColor, turnColor);
+	}
+	
+	private void saveGame() {
+		GameState savedGameState = new GameState(board, turnColor, halfMoveCounter, boardStates, captured, highlightMoves, gui.isAutoQueenPromotion());
+		
+		int choice;
+		
+		if(gui.hasSavedGame(singlePlayer))
+			choice = JOptionPane.showConfirmDialog(this, "Save current game? Previous save will be overwritten.", "Save Game", JOptionPane.YES_NO_OPTION);
+		else
+			choice = JOptionPane.showConfirmDialog(this, "Save current game?", "Save Game", JOptionPane.YES_NO_OPTION);
+		
+		if(choice == JOptionPane.YES_OPTION) {
+			try {
+				SaveLoadUtils.saveGame(savedGameState, singlePlayer);
+				gui.setSavedGame(savedGameState, singlePlayer);
+				JOptionPane.showMessageDialog(this, "Game saved.");
+			}
+			catch(Exception e) {
+				JOptionPane.showMessageDialog(this, "Game could not be saved.");
+			}
+		}	
 	}
 	
 	private void intitializeGUIBoard() {
@@ -158,6 +176,10 @@ public class ChessPanel extends JPanel {
 	}
 	
 	private void playTurn(int row, int col) {
+
+		if(singlePlayer && turnColor == aiColor && !aiThinking) {
+			return;
+		}
 		
 		Pawn clickedPawn = board.getPawn(row, col);
 			
@@ -242,7 +264,7 @@ public class ChessPanel extends JPanel {
 		GUIUtils.updateCapturedPawns(captured, leftCaptured, rightCaptured);
 		GUIUtils.resetBoardColors(board, squares);
 		
-		PromotionUtils.handlePromotion(this, board, turnColor, gui.isAutoQueenPromotion());
+		PromotionUtils.handlePromotion(this, board, turnColor, gui.isAutoQueenPromotion(), singlePlayer, aiColor);
 
 		boardStates.add(new BoardState(board, turnColor.opposite()));
 		
@@ -252,6 +274,7 @@ public class ChessPanel extends JPanel {
 		if(Controller.isGameOver(board, turnColor, boardStates, halfMoveCounter)) {
 			JOptionPane.showMessageDialog(this, GUIUtils.gameOverMessage(board, turnColor, boardStates, halfMoveCounter));
 			gui.showStartScreen();
+			return;
 		}
 		
 		turnColor = turnColor.opposite();
@@ -259,10 +282,35 @@ public class ChessPanel extends JPanel {
 		selectedCol = -1;
 		
 		GUIUtils.updateTurnLabel(turnLabel, backgroundColor, turnColor);
+
+		startAITurnIfNeeded();
 	}
 	
-	
-	
-	
+	public void playAITurn() {
+		
+		int[] move = AI.chooseMove(board, aiColor);
+	    
+		int fromRow = move[0];
+		int fromCol = move[1];
+		int toRow = move[2];
+		int toCol = move[3];
+		
+	    playTurn(fromRow, fromCol);
+	    playTurn(toRow, toCol);
+	}
+
+	private void startAITurnIfNeeded() {
+		if(singlePlayer && turnColor == aiColor && !aiThinking) {
+			aiThinking = true;
+
+			javax.swing.Timer timer = new javax.swing.Timer(500, e -> {
+				playAITurn();
+				aiThinking = false;
+			});
+
+			timer.setRepeats(false);
+			timer.start();
+		}
+	}
 	
 }
