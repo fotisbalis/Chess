@@ -9,11 +9,11 @@ import move.*;
 
 public class AI {
 
-	public static Move chooseMove(Board board, PawnColor aiColor){
+	public static Move chooseMove(Board board, PawnColor aiColor, int depth){
 		
 		ArrayList<Move> legalMoves = AIUtils.legalMoves(board, aiColor);
-	    int max_score = Integer.MIN_VALUE;
-	    Move best_move = null;
+	    int maxScore = Integer.MIN_VALUE;
+	    Move bestMove = null;
 		
 	    if(legalMoves.isEmpty()) {
 	        return null;
@@ -22,31 +22,67 @@ public class AI {
 	    for(Move move : legalMoves) {
 	    	Pawn pawn = board.getPawn(move.getStartingRow(), move.getStartingCol());
 	    	
+	    	if(pawn == null)
+	    		continue;
+	    	
 	    	Board tmpBoard = MovesUtils.simulateMove(board, pawn, move.getTargetRow(), move.getTargetCol());
-	    	Pawn movedPawn = tmpBoard.getPawn(move.getTargetRow(), move.getTargetCol());
 	    	
-	    	int tmpScore = AIUtils.boardScore(tmpBoard, aiColor);
+	    	int score = AIUtils.currentScore(board, tmpBoard, move, aiColor);
+	    
+	    	score += simulateMoveScoreInDepth(tmpBoard, aiColor, aiColor.opposite(), depth - 1);
 	    	
-	    	if(AIUtils.isPawnInDanger(tmpBoard, movedPawn))
-	    		tmpScore -= movedPawn.getPawnValue() / 2;
-	    	
-	    	if(pawn instanceof King && CastlingUtils.isMoveCastling((King) pawn, move.getTargetRow(), move.getTargetCol()))
-	    		tmpScore += 500;
-	    	
-	    	if(pawn instanceof Soldier && EnPassantUtils.isMoveEnPassant(board, (Soldier) pawn, move.getTargetRow(), move.getTargetCol()))
-	    		tmpScore += 100;
-	    	
-	    	int promotionRow = pawn.getColor() == PawnColor.WHITE ? 0 : 7;
-	    	if(pawn instanceof Soldier && move.getTargetRow() == promotionRow)
-	    		tmpScore += 10000;
-	    		
-	    	if(tmpScore > max_score) {
-	    		max_score = tmpScore;
-	    		best_move = move;
+	    	if(score > maxScore) {
+	    		maxScore = score;
+	    		bestMove = move;
 	    	}
 	    }
 	    
-	    return best_move;
+	    return bestMove;
+	}
+	
+	private static int simulateMoveScoreInDepth(Board board, PawnColor aiColor, PawnColor turnColor, int depth) {
+		
+		if(depth <= 0)
+			return AIUtils.boardScore(board, aiColor);
+		
+		ArrayList<Move> legalMoves = AIUtils.legalMoves(board, turnColor);
+		
+		if(legalMoves.isEmpty())
+			return AIUtils.boardScore(board, aiColor);
+		
+		if(turnColor == aiColor) {
+	        int bestScore = Integer.MIN_VALUE;
+ 
+	        for(Move move : legalMoves) {
+	            Pawn pawn = board.getPawn(move.getStartingRow(), move.getStartingCol());
+	            
+	            if(pawn == null)
+	            	continue;
+	            
+	            Board tmpBoard = MovesUtils.simulateMove(board, pawn, move.getTargetRow(), move.getTargetCol());
+
+	            int score = simulateMoveScoreInDepth(tmpBoard, aiColor, turnColor.opposite(), depth - 1);
+	            bestScore = Math.max(bestScore, score);
+	        }
+
+	        return bestScore;
+	    } 
+		else {
+	        int bestScore = Integer.MAX_VALUE;
+
+	        for (Move move : legalMoves) {
+	            Pawn pawn = board.getPawn(move.getStartingRow(), move.getStartingCol());
+	            
+	            if(pawn == null)
+	            	continue;
+	            
+	            Board tmpBoard = MovesUtils.simulateMove(board, pawn, move.getTargetRow(), move.getTargetCol());
+
+	            int score = simulateMoveScoreInDepth(tmpBoard, aiColor, turnColor.opposite(), depth - 1);
+	            bestScore = Math.min(bestScore, score);
+	        }
+	        return bestScore;
+		}
 	}
 	
 }

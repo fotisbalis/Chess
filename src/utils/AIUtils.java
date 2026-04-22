@@ -7,7 +7,7 @@ import pawn.*;
 import move.*;
 
 public class AIUtils {
-
+	
 	public static ArrayList<Move> legalMoves(Board board, PawnColor aiColor) {
 		
 		ArrayList<Move> legalMoves = new ArrayList<Move>();
@@ -57,6 +57,32 @@ public class AIUtils {
 		return score;
 	}
 
+	public static int currentScore(Board originalBoard, Board board, Move move, PawnColor aiColor) {
+		
+		int score = AIUtils.boardScore(board, aiColor);
+		
+		Pawn originalPawn = originalBoard.getPawn(move.getStartingRow(), move.getStartingCol());
+		Pawn movedPawn = board.getPawn(move.getTargetRow(), move.getTargetCol());
+		
+		if(originalPawn == null || movedPawn == null)
+			return score;
+		
+		if(AIUtils.isPawnInDanger(board, movedPawn))
+     		score -= movedPawn.getPawnValue() / 2;
+     	
+     	if(originalPawn instanceof King && CastlingUtils.isMoveCastling((King) originalPawn, move.getTargetRow(), move.getTargetCol()))
+     		score += 500;
+     	
+     	if(originalPawn instanceof Soldier && EnPassantUtils.isMoveEnPassant(originalBoard, (Soldier) originalPawn, move.getTargetRow(), move.getTargetCol()))
+     		score += 100;
+     	
+     	int promotionRow = originalPawn.getColor() == PawnColor.WHITE ? 0 : 7;
+     	if(originalPawn instanceof Soldier && move.getTargetRow() == promotionRow)
+     		score += 5000;
+     	
+     	return score;
+	}
+	
 	public static boolean isPawnInDanger(Board board, Pawn pawn) {
 		int r, c;
 		
@@ -68,7 +94,7 @@ public class AIUtils {
 				Pawn attackingPawn = board.getPawn(r, c);
 				
 				if(attackingPawn != null && attackingPawn.getColor() != pawn.getColor()) {
-					boolean validMoves[][] = MovesUtils.possibleMoves(board, attackingPawn);
+					boolean validMoves[][] = MovesUtils.possibleMoves(board, attackingPawn, false);
 					
 					if(validMoves[pawn.getRow()][pawn.getCol()])
 						return true;

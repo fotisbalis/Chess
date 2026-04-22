@@ -9,6 +9,10 @@ import pawn.*;
 public class MovesUtils {
 
 	public static boolean[][] possibleMoves(Board board, Pawn pawn) {
+		return possibleMoves(board, pawn, true);
+	}
+
+	public static boolean[][] possibleMoves(Board board, Pawn pawn, boolean includeCastling) {
 		boolean[][] validMoves = new boolean[8][8];
 		int r, c;		
 		
@@ -19,7 +23,14 @@ public class MovesUtils {
 				if(pawn.getRow() == r && pawn.getCol() == c)
 					continue;
 				
-				if(pawn.isValidMove(board, r, c)) {
+				if(!includeCastling && pawn instanceof King) {
+					boolean normalKingMove = Math.abs(c - pawn.getCol()) <= 1 && Math.abs(r - pawn.getRow()) <= 1;
+					Pawn target = board.getPawn(r, c);
+
+					if(normalKingMove && (target == null || target.getColor() != pawn.getColor()))
+						validMoves[r][c] = true;
+				}
+				else if(pawn.isValidMove(board, r, c)) {
 					validMoves[r][c] = true;
 				}
 			}

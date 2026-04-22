@@ -289,7 +289,7 @@ public class ChessPanel extends JPanel {
 	
 	public void playAITurn() {
 		
-		Move move = AI.chooseMove(board, aiColor);
+		Move move = AI.chooseMove(board, aiColor, 4);
 
 		if(move == null) {
 			return;

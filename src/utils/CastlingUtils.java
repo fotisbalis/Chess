@@ -75,7 +75,7 @@ public class CastlingUtils {
 				Pawn pawn = board.getPawn(r, c);
 				
 				if(pawn != null && pawn.getColor() != color) {
-					boolean validMoves[][] = MovesUtils.possibleMoves(board, pawn);
+					boolean validMoves[][] = MovesUtils.possibleMoves(board, pawn, false);
 					
 					if(validMoves[row][col])
 						return true;
