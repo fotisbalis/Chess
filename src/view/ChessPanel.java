@@ -6,6 +6,7 @@ import controller.*;
 import utils.*;
 import save.*;
 import ai.*;
+import move.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -288,15 +289,14 @@ public class ChessPanel extends JPanel {
 	
 	public void playAITurn() {
 		
-		int[] move = AI.chooseMove(board, aiColor);
-	    
-		int fromRow = move[0];
-		int fromCol = move[1];
-		int toRow = move[2];
-		int toCol = move[3];
+		Move move = AI.chooseMove(board, aiColor);
+
+		if(move == null) {
+			return;
+		}
 		
-	    playTurn(fromRow, fromCol);
-	    playTurn(toRow, toCol);
+	    playTurn(move.getStartingRow(), move.getStartingCol());
+	    playTurn(move.getTargetRow(), move.getTargetCol());
 	}
 
 	private void startAITurnIfNeeded() {

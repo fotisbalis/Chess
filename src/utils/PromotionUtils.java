@@ -21,7 +21,7 @@ public class PromotionUtils {
 		
 		return pawnsForPromotion;
 	}
-
+	
 	public static void handlePromotion(Component parent, Board board, PawnColor color, boolean autoQueenPromotion, boolean singlePlayer, PawnColor aiColor) {
 		
 		ArrayList<Pawn> pawnsForPromotion = PromotionUtils.getPawnsForPromotion(color);

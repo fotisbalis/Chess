@@ -1,6 +1,7 @@
 package pawn;
 
 import board.*;
+import utils.CastlingUtils;
 
 public class King extends Pawn {
 	
@@ -27,7 +28,7 @@ public class King extends Pawn {
     	boolean normalKingMove = Math.abs(newCol - col) <= 1 && Math.abs(newRow - row) <= 1;
     	boolean castlingKingMove = newRow == row && Math.abs(newCol - col) == 2;
     	
-    	if(!normalKingMove && !castlingKingMove)
+    	if(!normalKingMove && !(castlingKingMove && CastlingUtils.canCastlingHappen(board, this, newCol)))
     		return false;
     	
     	if(target != null) {

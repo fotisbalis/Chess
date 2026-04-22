@@ -4,12 +4,13 @@ import java.util.ArrayList;
 
 import board.*;
 import pawn.*;
+import move.*;
 
 public class AIUtils {
 
-	public static ArrayList<int[]> legalMoves(Board board, PawnColor aiColor) {
+	public static ArrayList<Move> legalMoves(Board board, PawnColor aiColor) {
 		
-		ArrayList<int[]> legalMoves = new ArrayList<int[]>();
+		ArrayList<Move> legalMoves = new ArrayList<Move>();
 
 	    for(Pawn pawn : board.getPlayerPawns(aiColor)) {
 	        boolean[][] possibleLegalMoves = MovesUtils.possibleLegalMoves(board, pawn);
@@ -17,7 +18,7 @@ public class AIUtils {
 	        for(int row = 0; row < 8; row++) {
 	            for(int col = 0; col < 8; col++) {
 	                if(possibleLegalMoves[row][col]) {
-	                    legalMoves.add(new int[] {pawn.getRow(), pawn.getCol(), row, col});
+	                    legalMoves.add(new Move(pawn.getRow(), pawn.getCol(), row, col));
 	                }
 	            }
 	        }
@@ -41,15 +42,40 @@ public class AIUtils {
 	            }
 
 	            int value = pawn.getPawnValue();
+	            int position_score = 0;
+	            
+	            if((pawn.getCol() == 3 || pawn.getCol() == 4) && !(pawn instanceof King))
+	            	position_score = value / 10;
 
 	            if(pawn.getColor() == aiColor)
-	                score += value;
+	                score += value + position_score;
 	            else 
-	                score -= value;
+	                score -= value + position_score;
 			}
 		}
 		
 		return score;
 	}
 
+	public static boolean isPawnInDanger(Board board, Pawn pawn) {
+		int r, c;
+		
+		if(pawn == null) return false;
+		
+		for(r = 0; r < 8; r++) {
+			for(c = 0; c < 8; c++) {
+				
+				Pawn attackingPawn = board.getPawn(r, c);
+				
+				if(attackingPawn != null && attackingPawn.getColor() != pawn.getColor()) {
+					boolean validMoves[][] = MovesUtils.possibleMoves(board, attackingPawn);
+					
+					if(validMoves[pawn.getRow()][pawn.getCol()])
+						return true;
+				}
+			}
+		}
+		
+		return false;
+	}
 }
