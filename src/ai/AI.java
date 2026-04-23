@@ -11,7 +11,7 @@ import move.*;
 
 public class AI {
 
-	public static Move chooseMove(Board board, PawnColor aiColor, int depth){
+	public static Move chooseMove(Board board, PawnColor aiColor, int depth, int moveCounter){
 		
 		ArrayList<Move> legalMoves = AIUtils.legalMoves(board, aiColor);
 	    int maxScore = Integer.MIN_VALUE;
@@ -19,6 +19,15 @@ public class AI {
 		
 	    if(legalMoves.isEmpty()) {
 	        return null;
+	    }
+	    
+	    if(moveCounter < 3) {
+	    	int randomIndex = (int)(Math.random() * legalMoves.size());
+		    
+	    	while(board.getPawn(legalMoves.get(randomIndex).getStartingRow(), legalMoves.get(randomIndex).getStartingCol()) instanceof King)
+	    		randomIndex = (int)(Math.random() * legalMoves.size());
+	    	
+	    	return legalMoves.get(randomIndex);
 	    }
 
 	    int threadCount = Math.min(legalMoves.size(), Runtime.getRuntime().availableProcessors());
@@ -36,6 +45,7 @@ public class AI {
 	    					return null;
 
 	    				Board tmpBoard = MovesUtils.simulateMove(board, pawn, move.getTargetRow(), move.getTargetCol());
+	    				PromotionUtils.handlePromotion(null, tmpBoard, aiColor, true, true, aiColor);
 
 	    				int score = AIUtils.scoreAfterMove(board, tmpBoard, move, aiColor);
 	    				score += simulateMoveScoreInDepth(tmpBoard, aiColor, aiColor.opposite(), depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE);
@@ -90,6 +100,7 @@ public class AI {
 	            	continue;
 	            
 	            Board tmpBoard = MovesUtils.simulateMove(board, pawn, move.getTargetRow(), move.getTargetCol());
+	            PromotionUtils.handlePromotion(null, tmpBoard, aiColor, true, true, aiColor);
 
 	            int score = simulateMoveScoreInDepth(tmpBoard, aiColor, turnColor.opposite(), depth - 1, alpha, beta);
 	            bestScore = Math.max(bestScore, score);
@@ -111,6 +122,7 @@ public class AI {
 	            	continue;
 	            
 	            Board tmpBoard = MovesUtils.simulateMove(board, pawn, move.getTargetRow(), move.getTargetCol());
+	            PromotionUtils.handlePromotion(null, tmpBoard, turnColor, true, true, aiColor);
 
 	            int score = simulateMoveScoreInDepth(tmpBoard, aiColor, turnColor.opposite(), depth - 1, alpha, beta);
 	            bestScore = Math.min(bestScore, score);
@@ -122,7 +134,7 @@ public class AI {
 	        return bestScore;
 		}
 	}
-
+	
 	private static class MoveScore {
 		private final Move move;
 		private final int score;

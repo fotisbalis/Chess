@@ -21,7 +21,7 @@ public class GameModePanel extends JPanel {
 
 		JButton newGameButton = createMenuButton("Start New Game");
 		if(singlePlayer)
-			newGameButton.addActionListener(e -> gui.showSinglePlayerGameScreen());
+			newGameButton.addActionListener(e -> gui.showDifficultyScreen());
 		else
 			newGameButton.addActionListener(e -> gui.showGameScreen());
 

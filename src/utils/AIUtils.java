@@ -26,7 +26,7 @@ public class AIUtils {
 	    
 	    return legalMoves;
 	}
-	
+
 	public static int boardScore(Board board, PawnColor aiColor) {
 		
 		int score = 0;
@@ -42,15 +42,11 @@ public class AIUtils {
 	            }
 
 	            int value = pawn.getPawnValue();
-	            int position_score = 0;
-	            
-	            if((pawn.getCol() == 3 || pawn.getCol() == 4) && !(pawn instanceof King))
-	            	position_score = value / 10;
 
 	            if(pawn.getColor() == aiColor)
-	                score += value + position_score;
+	                score += value;
 	            else 
-	                score -= value + position_score;
+	                score -= value;
 			}
 		}
 		
@@ -68,7 +64,7 @@ public class AIUtils {
 			return score;
 		
 		if(KingCheckUtils.isKingInDanger(board, aiColor.opposite()))
-			score += 2000;
+			score += 200;
 		
 		if(GameCheckUtils.isCheckMate(board, aiColor.opposite()))
 			score += 1000000;
@@ -77,7 +73,7 @@ public class AIUtils {
      		score -= movedPawn.getPawnValue() / 2;
      	
      	if(originalPawn instanceof King && CastlingUtils.isMoveCastling((King) originalPawn, move.getTargetRow(), move.getTargetCol()))
-     		score += 800;
+     		score += 1000;
      	
      	if(originalPawn instanceof Soldier && EnPassantUtils.isMoveEnPassant(originalBoard, (Soldier) originalPawn, move.getTargetRow(), move.getTargetCol()))
      		score += 200;
@@ -110,4 +106,5 @@ public class AIUtils {
 		
 		return false;
 	}
+
 }

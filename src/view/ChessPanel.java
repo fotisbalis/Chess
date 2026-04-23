@@ -38,16 +38,23 @@ public class ChessPanel extends JPanel {
 	private boolean singlePlayer;
 	private PawnColor aiColor = PawnColor.BLACK;
 	private boolean aiThinking = false;
+	private int aiMoveCounter;
+	private int aiDepth = 5;
 	
 	public ChessPanel(GUI gui, boolean highlightMoves) {
 		this(gui, highlightMoves, false);
 	}
 
 	public ChessPanel(GUI gui, boolean highlightMoves, boolean singlePlayer) {
+		this(gui, highlightMoves, singlePlayer, 5);
+	}
+
+	public ChessPanel(GUI gui, boolean highlightMoves, boolean singlePlayer, int aiDepth) {
 		
 		this.gui = gui;
 		this.highlightMoves = highlightMoves;
 		this.singlePlayer = singlePlayer;
+		this.aiDepth = aiDepth;
 		
 		this.board.initializeBoard();
 		this.turnColor = PawnColor.WHITE;
@@ -289,7 +296,7 @@ public class ChessPanel extends JPanel {
 	
 	public void playAITurn() {
 		
-		Move move = AI.chooseMove(board, aiColor, 5);
+		Move move = AI.chooseMove(board, aiColor, aiDepth, aiMoveCounter);
 
 		if(move == null) {
 			return;
@@ -297,6 +304,7 @@ public class ChessPanel extends JPanel {
 		
 	    playTurn(move.getStartingRow(), move.getStartingCol());
 	    playTurn(move.getTargetRow(), move.getTargetCol());
+	    aiMoveCounter++;
 	}
 
 	private void startAITurnIfNeeded() {

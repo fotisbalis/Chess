@@ -15,7 +15,7 @@ public class King extends Pawn {
     }
     
     public int getPawnValue() {
-    	return 20000;
+    	return 100;
     }
     
     public boolean isValidMove(Board board, int newRow, int newCol) {
