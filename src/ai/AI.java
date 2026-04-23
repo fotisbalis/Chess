@@ -11,6 +11,11 @@ import move.*;
 
 public class AI {
 
+	private static final int MIN_PARALLEL_DEPTH = 4;
+	private static final int MIN_PARALLEL_MOVES = 8;
+	private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(
+			Math.max(1, Runtime.getRuntime().availableProcessors()));
+
 	public static Move chooseMove(Board board, PawnColor aiColor, int depth, int moveCounter){
 		
 		ArrayList<Move> legalMoves = AIUtils.legalMoves(board, aiColor);
@@ -30,13 +35,33 @@ public class AI {
 	    	return legalMoves.get(randomIndex);
 	    }
 
-	    int threadCount = Math.min(legalMoves.size(), Runtime.getRuntime().availableProcessors());
-	    ExecutorService executor = Executors.newFixedThreadPool(Math.max(1, threadCount));
+	    if(depth < MIN_PARALLEL_DEPTH || legalMoves.size() < MIN_PARALLEL_MOVES) {
+	    	for(Move move : legalMoves) {
+	    		Pawn pawn = board.getPawn(move.getStartingRow(), move.getStartingCol());
+
+	    		if(pawn == null)
+	    			continue;
+
+	    		Board tmpBoard = MovesUtils.simulateMove(board, pawn, move.getTargetRow(), move.getTargetCol());
+	    		PromotionUtils.handlePromotion(null, tmpBoard, aiColor, true, true, aiColor);
+
+	    		int score = AIUtils.scoreAfterMove(board, tmpBoard, move, aiColor);
+	    		score += simulateMoveScoreInDepth(tmpBoard, aiColor, aiColor.opposite(), depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE);
+
+	    		if(score > maxScore) {
+	    			maxScore = score;
+	    			bestMove = move;
+	    		}
+	    	}
+
+	    	return bestMove;
+	    }
+
 	    List<Future<MoveScore>> futures = new ArrayList<Future<MoveScore>>();
 
 	    try {
 	    	for(Move move : legalMoves) {
-	    		futures.add(executor.submit(new Callable<MoveScore>() {
+	    		futures.add(EXECUTOR.submit(new Callable<MoveScore>() {
 	    			@Override
 	    			public MoveScore call() {
 	    				Pawn pawn = board.getPawn(move.getStartingRow(), move.getStartingCol());
@@ -72,9 +97,6 @@ public class AI {
 	    }
 	    catch(ExecutionException e) {
 	    	throw new RuntimeException("Failed to evaluate AI moves in parallel", e);
-	    }
-	    finally {
-	    	executor.shutdown();
 	    }
 	    
 	    return bestMove;

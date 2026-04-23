@@ -73,11 +73,7 @@ public class MovesUtils {
 						for(col = 0; col < 8; col++) {
 							
 							if(MovesUtils.isLegalMove(board, currentPawn, row, col)) {
-								
-								Board tmpBoard = MovesUtils.simulateMove(board, currentPawn, row, col);
-																
-								if(!KingCheckUtils.isKingInDanger(tmpBoard, currentPawn.getColor()))
-										return true;
+								return true;
 							}
 						}
 					}

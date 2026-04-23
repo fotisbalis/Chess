@@ -82,15 +82,18 @@ public class AIUtils {
 		if(GameCheckUtils.isCheckMate(board, aiColor.opposite()))
 			score += 1000000;
      	
-     	if(originalPawn instanceof King && CastlingUtils.isMoveCastling((King) originalPawn, move.getTargetRow(), move.getTargetCol()))
-     		score += 1000;
-     	
-     	if(originalPawn instanceof Soldier && EnPassantUtils.isMoveEnPassant(originalBoard, (Soldier) originalPawn, move.getTargetRow(), move.getTargetCol()))
-     		score += 500;
-     	
-     	int promotionRow = originalPawn.getColor() == PawnColor.WHITE ? 0 : 7;
+		if(!(originalPawn instanceof Soldier) && !(originalPawn instanceof King))
+			return score;
+		
+		int promotionRow = originalPawn.getColor() == PawnColor.WHITE ? 0 : 7;
      	if(originalPawn instanceof Soldier && move.getTargetRow() == promotionRow)
      		score += 5000;
+		
+     	else if(originalPawn instanceof King && CastlingUtils.isMoveCastling((King) originalPawn, move.getTargetRow(), move.getTargetCol()))
+     		score += 1000;
+     	
+		else if(originalPawn instanceof Soldier && EnPassantUtils.isMoveEnPassant(originalBoard, (Soldier) originalPawn, move.getTargetRow(), move.getTargetCol()))
+     		score += 500;
 		
      	return score;
 	}
@@ -104,22 +107,22 @@ public class AIUtils {
 		int toRow = move.getTargetRow();
 		int toCol = move.getTargetCol();
 		int score = 0;
-		Pawn target = board.getPawn(toRow, toCol);
 		
-		if(target != null && target.getColor() != pawn.getColor())
-			score += (target.getPawnValue() * 10) - pawn.getPawnValue();
+		if(!(pawn instanceof Soldier) && !(pawn instanceof King))
+			return score;
 		
-		if(pawn instanceof Soldier && EnPassantUtils.isMoveEnPassant(board, (Soldier) pawn, toRow, toCol))
+		int promotionRow = pawn.getColor() == PawnColor.WHITE ? 0 : 7;
+		if(pawn instanceof Soldier && toRow == promotionRow) {
+			score += 5000;
+		}
+		
+		else if(pawn instanceof Soldier && EnPassantUtils.isMoveEnPassant(board, (Soldier) pawn, toRow, toCol))
 			score += 500;
 		
-		if(pawn instanceof Soldier && toRow == (pawn.getColor() == PawnColor.WHITE ? 0 : 7))
-			score += 5000;
-		
-		if(pawn instanceof King && CastlingUtils.isMoveCastling((King) pawn, toRow, toCol))
+		else if(pawn instanceof King && CastlingUtils.isMoveCastling((King) pawn, toRow, toCol))
 			score += 1000;
 		
-		Board tmpBoard = MovesUtils.simulateMove(board, pawn, toRow, toCol);
-		PromotionUtils.handlePromotion(null, tmpBoard, pawn.getColor(), true, true, pawn.getColor());
+		
 		
 		return score;
 	}
