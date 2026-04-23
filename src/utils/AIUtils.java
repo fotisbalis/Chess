@@ -57,7 +57,7 @@ public class AIUtils {
 		return score;
 	}
 
-	public static int currentScore(Board originalBoard, Board board, Move move, PawnColor aiColor) {
+	public static int scoreAfterMove(Board originalBoard, Board board, Move move, PawnColor aiColor) {
 		
 		int score = AIUtils.boardScore(board, aiColor);
 		
@@ -67,18 +67,24 @@ public class AIUtils {
 		if(originalPawn == null || movedPawn == null)
 			return score;
 		
+		if(KingCheckUtils.isKingInDanger(board, aiColor.opposite()))
+			score += 2000;
+		
+		if(GameCheckUtils.isCheckMate(board, aiColor.opposite()))
+			score += 1000000;
+		
 		if(AIUtils.isPawnInDanger(board, movedPawn))
      		score -= movedPawn.getPawnValue() / 2;
      	
      	if(originalPawn instanceof King && CastlingUtils.isMoveCastling((King) originalPawn, move.getTargetRow(), move.getTargetCol()))
-     		score += 500;
+     		score += 800;
      	
      	if(originalPawn instanceof Soldier && EnPassantUtils.isMoveEnPassant(originalBoard, (Soldier) originalPawn, move.getTargetRow(), move.getTargetCol()))
-     		score += 100;
+     		score += 200;
      	
      	int promotionRow = originalPawn.getColor() == PawnColor.WHITE ? 0 : 7;
      	if(originalPawn instanceof Soldier && move.getTargetRow() == promotionRow)
-     		score += 5000;
+     		score += 3000;
      	
      	return score;
 	}

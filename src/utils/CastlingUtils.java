@@ -22,7 +22,7 @@ public class CastlingUtils {
 			return false;
 		
 		// 2nd rule: Squares between King and Rook must be empty
-		if(!MovesUtils.isSameRowValidMove(board, rook.getCol(), row, king.getCol() + stepCastlingDirection))
+		if(!CastlingUtils.areCastlingSquaresEmpty(board, row, king.getCol(), rook.getCol()))
 			return false;
 		
 		// 3rd rule: King must not currently be in check
@@ -33,6 +33,19 @@ public class CastlingUtils {
 		if(CastlingUtils.isSquareInDanger(board, turnColor, row, king.getCol() + stepCastlingDirection) ||
 				CastlingUtils.isSquareInDanger(board, turnColor, row, kingTargetCol))
 			return false;
+		
+		return true;
+	}
+
+	private static boolean areCastlingSquaresEmpty(Board board, int row, int kingCol, int rookCol) {
+		
+		int step = Integer.compare(rookCol, kingCol);
+		int col;
+		
+		for(col = kingCol + step; col != rookCol; col += step) {
+			if(board.getPawn(row, col) != null)
+				return false;
+		}
 		
 		return true;
 	}
