@@ -26,7 +26,7 @@ public class AI {
 	        return null;
 	    }
 	    
-	    if(moveCounter < 3) {
+	    if(moveCounter < 2) {
 	    	int randomIndex = (int)(Math.random() * legalMoves.size());
 		    
 	    	while(board.getPawn(legalMoves.get(randomIndex).getStartingRow(), legalMoves.get(randomIndex).getStartingCol()) instanceof King)
@@ -43,7 +43,6 @@ public class AI {
 	    			continue;
 
 	    		Board tmpBoard = MovesUtils.simulateMove(board, pawn, move.getTargetRow(), move.getTargetCol());
-	    		PromotionUtils.handlePromotion(null, tmpBoard, aiColor, true, true, aiColor);
 
 	    		int score = AIUtils.scoreAfterMove(board, tmpBoard, move, aiColor);
 	    		score += simulateMoveScoreInDepth(tmpBoard, aiColor, aiColor.opposite(), depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE);
@@ -116,15 +115,8 @@ public class AI {
 	        int bestScore = Integer.MIN_VALUE;
  
 	        for(Move move : legalMoves) {
-	            Pawn pawn = board.getPawn(move.getStartingRow(), move.getStartingCol());
+	        	int score = scoreMoveInDepth(board, move, aiColor, turnColor, depth, alpha, beta);
 	            
-	            if(pawn == null)
-	            	continue;
-	            
-	            Board tmpBoard = MovesUtils.simulateMove(board, pawn, move.getTargetRow(), move.getTargetCol());
-	            PromotionUtils.handlePromotion(null, tmpBoard, aiColor, true, true, aiColor);
-
-	            int score = simulateMoveScoreInDepth(tmpBoard, aiColor, turnColor.opposite(), depth - 1, alpha, beta);
 	            bestScore = Math.max(bestScore, score);
 	            alpha = Math.max(alpha, bestScore);
 	            
@@ -138,15 +130,8 @@ public class AI {
 	        int bestScore = Integer.MAX_VALUE;
 
 	        for (Move move : legalMoves) {
-	            Pawn pawn = board.getPawn(move.getStartingRow(), move.getStartingCol());
+	        	int score = scoreMoveInDepth(board, move, aiColor, turnColor, depth, alpha, beta);
 	            
-	            if(pawn == null)
-	            	continue;
-	            
-	            Board tmpBoard = MovesUtils.simulateMove(board, pawn, move.getTargetRow(), move.getTargetCol());
-	            PromotionUtils.handlePromotion(null, tmpBoard, turnColor, true, true, aiColor);
-
-	            int score = simulateMoveScoreInDepth(tmpBoard, aiColor, turnColor.opposite(), depth - 1, alpha, beta);
 	            bestScore = Math.min(bestScore, score);
 	            beta = Math.min(beta, bestScore);
 	            
@@ -155,6 +140,36 @@ public class AI {
 	        }
 	        return bestScore;
 		}
+	}
+
+	private static int scoreMoveInDepth(Board board, Move move, PawnColor aiColor, PawnColor turnColor, int depth, int alpha, int beta) {
+		Pawn pawn = board.getPawn(move.getStartingRow(), move.getStartingCol());
+
+		if(pawn == null) {
+			return turnColor == aiColor ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+		}
+
+		boolean pawnMoveState = pawn.hasMoved();
+		Pawn target = board.getPawn(move.getTargetRow(), move.getTargetCol());
+
+		if(pawn instanceof Soldier && EnPassantUtils.isMoveEnPassant(board, (Soldier) pawn, move.getTargetRow(), move.getTargetCol()) ||
+				pawn instanceof King && CastlingUtils.isMoveCastling((King) pawn, move.getTargetRow(), move.getTargetCol())) {
+			Board tmpBoard = MovesUtils.simulateMove(board, pawn, move.getTargetRow(), move.getTargetCol());
+			return simulateMoveScoreInDepth(tmpBoard, aiColor, turnColor.opposite(), depth - 1, alpha, beta);
+		}
+
+		if(pawn instanceof Soldier && move.getTargetRow() == (pawn.getColor() == PawnColor.WHITE ? 0 : 7)) {
+			MovesUtils.makeTmpMove(board, move);
+			PromotionUtils.handlePromotion(null, board, aiColor, true, true, aiColor);
+			int score = simulateMoveScoreInDepth(board, aiColor, turnColor.opposite(), depth - 1, alpha, beta);
+			MovesUtils.undoTmpMove(board, move, target, pawnMoveState);
+			return score;
+		}
+
+		MovesUtils.makeTmpMove(board, move);
+		int score = simulateMoveScoreInDepth(board, aiColor, turnColor.opposite(), depth - 1, alpha, beta);
+		MovesUtils.undoTmpMove(board, move, target, pawnMoveState);
+		return score;
 	}
 	
 	private static class MoveScore {

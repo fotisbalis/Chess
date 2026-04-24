@@ -23,8 +23,8 @@ public class AIUtils {
 	                    legalMoves.add(new Move(pawn.getRow(), pawn.getCol(), row, col));
 	                }
 	            }
-	    	    }
 	    	}
+	    }
 	    
 	    AIUtils.sortMoves(board, legalMoves);
 	    
@@ -87,7 +87,7 @@ public class AIUtils {
 		
 		int promotionRow = originalPawn.getColor() == PawnColor.WHITE ? 0 : 7;
      	if(originalPawn instanceof Soldier && move.getTargetRow() == promotionRow)
-     		score += 5000;
+     		score += 10000;
 		
      	else if(originalPawn instanceof King && CastlingUtils.isMoveCastling((King) originalPawn, move.getTargetRow(), move.getTargetCol()))
      		score += 1000;
@@ -113,7 +113,7 @@ public class AIUtils {
 		
 		int promotionRow = pawn.getColor() == PawnColor.WHITE ? 0 : 7;
 		if(pawn instanceof Soldier && toRow == promotionRow) {
-			score += 5000;
+			score += 10000;
 		}
 		
 		else if(pawn instanceof Soldier && EnPassantUtils.isMoveEnPassant(board, (Soldier) pawn, toRow, toCol))
@@ -121,8 +121,6 @@ public class AIUtils {
 		
 		else if(pawn instanceof King && CastlingUtils.isMoveCastling((King) pawn, toRow, toCol))
 			score += 1000;
-		
-		
 		
 		return score;
 	}

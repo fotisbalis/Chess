@@ -3,8 +3,10 @@ package board;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import controller.*;
 import pawn.*;
-import utils.GameStateUtils;
+import utils.*;
+import move.*;
 
 public class Board implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -118,5 +120,7 @@ public class Board implements Serializable {
 		
 		return newBoard;
 	}
+	
+	
 	
 }

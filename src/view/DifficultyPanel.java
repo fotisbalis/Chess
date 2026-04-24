@@ -17,9 +17,6 @@ public class DifficultyPanel extends JPanel {
 		titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		titleLabel.setFont(new Font("Serif", Font.BOLD, 38));
 		titleLabel.setForeground(new Color(240, 240, 240));
-
-		JButton beginnerButton = createMenuButton("Beginner");
-		beginnerButton.addActionListener(e -> gui.startSinglePlayerGame(2));
 		
 		JButton easyButton = createMenuButton("Easy");
 		easyButton.addActionListener(e -> gui.startSinglePlayerGame(3));
@@ -38,14 +35,12 @@ public class DifficultyPanel extends JPanel {
 
 		contentPanel.add(titleLabel);
 		contentPanel.add(Box.createRigidArea(new Dimension(0, 40)));
-		contentPanel.add(beginnerButton);
-		contentPanel.add(Box.createRigidArea(new Dimension(0, 16)));
 		contentPanel.add(easyButton);
 		contentPanel.add(Box.createRigidArea(new Dimension(0, 16)));
 		contentPanel.add(mediumButton);
 		contentPanel.add(Box.createRigidArea(new Dimension(0, 16)));
 		contentPanel.add(hardButton);
-		contentPanel.add(Box.createRigidArea(new Dimension(0, 16)));
+		contentPanel.add(Box.createRigidArea(new Dimension(0, 40)));
 		contentPanel.add(infoButton);
 		contentPanel.add(Box.createRigidArea(new Dimension(0, 16)));
 		contentPanel.add(backButton);
@@ -72,10 +67,9 @@ public class DifficultyPanel extends JPanel {
 				"for the opponent decrease it.\n\n" +
 				"Depth controls how many moves ahead the AI searches.\n\n" +
 				"Difficulty levels:\n" +
-				"Beginner: depth 2\n" +
-				"Easy: depth 3\n" +
-				"Medium: depth 4\n" +
-				"Hard: depth 5\n"
+				"Easy: depth 4\n" +
+				"Medium: depth 5\n" +
+				"Hard: depth 6\n"
 		);
 
 		infoText.setEditable(false);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import board.*;
 import controller.Controller;
+import move.Move;
 import pawn.*;
 
 public class MovesUtils {
@@ -111,6 +112,34 @@ public class MovesUtils {
 		Controller.makeMove(tmpBoard, tmpPawn, toRow, toCol);
 		
 		return tmpBoard;
+	}
+	
+	public static void makeTmpMove(Board board, Move move) {
+		
+		Pawn pawn = board.getPawn(move.getStartingRow(), move.getStartingCol());
+		
+		if(pawn instanceof Soldier && EnPassantUtils.isMoveEnPassant(board, (Soldier) pawn, move.getTargetRow(), move.getTargetCol()))
+			Controller.makeEnPassantMove(board, (Soldier) pawn, move.getTargetCol(), move.getTargetCol());
+		
+		else if(pawn instanceof King && CastlingUtils.isMoveCastling((King) pawn, move.getTargetRow(), move.getTargetCol())) {
+			Controller.makeCastlingMove(board, (King) pawn, CastlingUtils.isKingsideCastling(move.getStartingCol(), move.getTargetCol()));
+		}
+		
+		else
+			Controller.makeMove(board, pawn, move.getTargetRow(), move.getTargetCol());
+	}
+	
+	public static void undoTmpMove(Board board, Move move, Pawn target, boolean initialMoveState) {
+		
+		Pawn pawn = board.getPawn(move.getTargetRow(), move.getTargetCol());
+		
+		board.setPawn(move.getStartingRow(), move.getStartingCol(), pawn);
+		pawn.setPosition(move.getStartingRow(), move.getStartingCol());
+		pawn.setHasMoved(initialMoveState);
+	
+		board.setPawn(move.getTargetRow(), move.getTargetCol(), target);
+		if(target != null)
+			target.setPosition(move.getTargetRow(), move.getTargetCol());
 	}
 	
 	public static boolean isSameColumnValidMove(Board board, int fromRow, int toRow, int toCol) {
