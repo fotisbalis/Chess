@@ -59,14 +59,17 @@ public class GUIUtils {
 	    
 	}
 	
-	public static void highlightPossibleMoves(Board board, Pawn pawn, JButton[][] squares) {
+	public static void highlightPossibleMoves(Board board, Pawn pawn, JButton[][] squares, boolean brightColors) {
 		
 		ArrayList<Move> moves = pawn.getLegalMoves(board);
 		
-		GUIUtils.highlightSquare(pawn.getRow(), pawn.getCol(), squares, Color.ORANGE);
+		Color orange = brightColors ? Color.ORANGE : new Color(205, 170, 90);
+		Color green = brightColors ? Color.GREEN : new Color(60, 80, 60);
+		
+		GUIUtils.highlightSquare(pawn.getRow(), pawn.getCol(), squares, orange);
 		
 		for(Move move : moves) {
-			squares[move.getTargetRow()][move.getTargetCol()].setBackground(Color.GREEN);
+			squares[move.getTargetRow()][move.getTargetCol()].setBackground(green);
 		}
 	}
 	
@@ -75,7 +78,7 @@ public class GUIUtils {
 		squares[row][col].setBackground(color);
 	}
 	
-	public static void resetBoardColors(Board board, JButton[][] squares) {
+	public static void resetBoardColors(Board board, JButton[][] squares, boolean brightColors) {
 		int r, c;
 		
 		Color light = new Color(200, 200, 190);
@@ -90,19 +93,21 @@ public class GUIUtils {
 			}
 		}
 		
-		GUIUtils.markKingInDanger(board, squares);
+		Color red = brightColors ? Color.RED : new Color(190, 60, 60);
+		
+		GUIUtils.markKingInDanger(board, squares, red);
 	}
 	
-	private static void markKingInDanger(Board board, JButton[][] squares) {
+	private static void markKingInDanger(Board board, JButton[][] squares, Color color) {
 		
 		King whiteKing = KingCheckUtils.findKing(board, PawnColor.WHITE);		
 		King blackKing = KingCheckUtils.findKing(board, PawnColor.BLACK);
 		
 		if(KingCheckUtils.isKingInDanger(board, PawnColor.WHITE))
-			squares[whiteKing.getRow()][whiteKing.getCol()].setBackground(Color.RED);
+			squares[whiteKing.getRow()][whiteKing.getCol()].setBackground(color);
 		
 		if(KingCheckUtils.isKingInDanger(board, PawnColor.BLACK))
-			squares[blackKing.getRow()][blackKing.getCol()].setBackground(Color.RED);
+			squares[blackKing.getRow()][blackKing.getCol()].setBackground(color);
 		
 	}
 

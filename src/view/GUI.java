@@ -22,6 +22,7 @@ public class GUI extends JFrame {
     private boolean highlightMoves = true;
     private boolean autoQueenPromotion = false;
     private int pendingSinglePlayerDepth = 5;
+    private boolean brightColors = false;
     
     private GameState singlePlayerSavedGameState;
     private GameState twoPlayerSavedGameState;
@@ -99,6 +100,15 @@ public class GUI extends JFrame {
     
     public void setAutoQueenPromotion(boolean autoQueenPromotion) {
     	this.autoQueenPromotion = autoQueenPromotion;
+    	saveSettings();
+    }
+    
+    public boolean isBrightColorsEnabled() {
+        return brightColors;
+    }
+    
+    public void setBrightColors(boolean brightColors) {
+    	this.brightColors = brightColors;
     	saveSettings();
     }
 

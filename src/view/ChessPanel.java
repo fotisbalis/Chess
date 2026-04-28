@@ -244,12 +244,12 @@ public class ChessPanel extends JPanel {
 			}
 		}
 		
-		GUIUtils.resetBoardColors(board, squares);
+		GUIUtils.resetBoardColors(board, squares, gui.isBrightColorsEnabled());
 	}
 	
 	private void playTurn(int row, int col) {
 
-		GUIUtils.resetBoardColors(board, squares);
+		GUIUtils.resetBoardColors(board, squares, gui.isBrightColorsEnabled());
 		
 		if(singlePlayer && turnColor == aiColor && !aiThinking) {
 			return;
@@ -272,7 +272,7 @@ public class ChessPanel extends JPanel {
 			selectedCol = col;
 			
 			if(highlightMoves)
-				GUIUtils.highlightPossibleMoves(board, clickedPawn, squares);
+				GUIUtils.highlightPossibleMoves(board, clickedPawn, squares, gui.isBrightColorsEnabled());
 			else
 				GUIUtils.highlightSquare(clickedPawn.getRow(), clickedPawn.getCol(), squares, Color.ORANGE);
 			
@@ -282,13 +282,13 @@ public class ChessPanel extends JPanel {
 		// Case 2: Player has chosen pawn but changed his mind and chooses a new pawn
 		if(clickedPawn != null && clickedPawn.getColor() == turnColor) {
 			
-			GUIUtils.resetBoardColors(board, squares);
+			GUIUtils.resetBoardColors(board, squares, gui.isBrightColorsEnabled());
 			
 			selectedRow = row;
 			selectedCol = col;
 			
 			if(highlightMoves)
-				GUIUtils.highlightPossibleMoves(board, clickedPawn, squares);
+				GUIUtils.highlightPossibleMoves(board, clickedPawn, squares, gui.isBrightColorsEnabled());
 			else
 				GUIUtils.highlightSquare(row, col, squares, Color.ORANGE);
 			
@@ -304,7 +304,7 @@ public class ChessPanel extends JPanel {
 			selectedRow = -1;
 			selectedCol = -1;
 			
-			GUIUtils.resetBoardColors(board, squares);
+			GUIUtils.resetBoardColors(board, squares, gui.isBrightColorsEnabled());
 			
 			return;
 		}
@@ -337,7 +337,7 @@ public class ChessPanel extends JPanel {
 		
 		GUIUtils.refreshGUIBoard(board, squares);
 		GUIUtils.updateCapturedPawns(captured, leftCaptured, rightCaptured);
-		GUIUtils.resetBoardColors(board, squares);
+		GUIUtils.resetBoardColors(board, squares, gui.isBrightColorsEnabled());
 		
 		int promotionRow = selectedPawn.getColor() == PawnColor.WHITE ? 0 : 7;
 		if(selectedPawn instanceof Soldier && row == promotionRow)
@@ -346,7 +346,7 @@ public class ChessPanel extends JPanel {
 		boardStates.add(new BoardState(board, turnColor.opposite()));
 		
 		GUIUtils.refreshGUIBoard(board, squares);
-		GUIUtils.resetBoardColors(board, squares);
+		GUIUtils.resetBoardColors(board, squares, gui.isBrightColorsEnabled());
 		
 		if(Controller.isGameOver(board, turnColor, boardStates, halfMoveCounter)) {
 			handleGameOver();
@@ -377,7 +377,8 @@ public class ChessPanel extends JPanel {
 	    secondLastAIMove = lastAIMove;
 	    lastAIMove = move;
 	    
-	    GUIUtils.highlightSquare(move.getTargetRow(), move.getTargetCol(), squares, new Color(100, 149, 237));
+	    Color softBlue = new Color(100, 149, 237);
+	    GUIUtils.highlightSquare(move.getTargetRow(), move.getTargetCol(), squares, softBlue);
 	}
 
 	private void startAITurnIfNeeded() {
