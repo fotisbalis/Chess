@@ -19,13 +19,13 @@ public class DifficultyPanel extends JPanel {
 		titleLabel.setForeground(new Color(240, 240, 240));
 		
 		JButton easyButton = createMenuButton("Easy");
-		easyButton.addActionListener(e -> gui.startSinglePlayerGame(3));
+		easyButton.addActionListener(e -> showColorSelection(gui, 3));
 
 		JButton mediumButton = createMenuButton("Medium");
-		mediumButton.addActionListener(e -> gui.startSinglePlayerGame(4));
+		mediumButton.addActionListener(e -> showColorSelection(gui, 4));
 
 		JButton hardButton = createMenuButton("Hard");
-		hardButton.addActionListener(e -> gui.startSinglePlayerGame(5));
+		hardButton.addActionListener(e -> showColorSelection(gui, 5));
 
 		JButton infoButton = createMenuButton("AI Info");
 		infoButton.addActionListener(e -> showAIInfo());
@@ -57,6 +57,11 @@ public class DifficultyPanel extends JPanel {
 		button.setFont(new Font("SansSerif", Font.BOLD, 16));
 
 		return button;
+	}
+
+	private void showColorSelection(GUI gui, int aiDepth) {
+		gui.setPendingSinglePlayerDepth(aiDepth);
+		gui.showSinglePlayerColorScreen();
 	}
 
 	private void showAIInfo() {

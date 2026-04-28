@@ -1,6 +1,9 @@
 package pawn;
 
+import java.util.ArrayList;
+
 import board.*;
+import move.Move;
 import utils.*;
 
 public class Soldier extends Pawn {
@@ -96,6 +99,35 @@ public class Soldier extends Pawn {
     	}
     	
     	return false;
+    }
+    
+    public ArrayList<Move> getLegalMoves(Board board){
+    	
+    	ArrayList<Move> legalMoves = new ArrayList<Move>();
+    	Move move;
+    	
+    	int direction = 1;
+    	
+    	if(this.getColor() == PawnColor.WHITE)
+    		direction = -1;
+    	
+    	move = new Move(row, col, row + direction, col);
+    	if(MovesUtils.isLegalMove(board, board.getPawn(row, col), move.getTargetRow(), move.getTargetCol()))
+    		legalMoves.add(move);
+    		
+    	move = new Move(row, col, row + 2 * direction, col);
+    	if(MovesUtils.isLegalMove(board, board.getPawn(row, col), move.getTargetRow(), move.getTargetCol()))
+    		legalMoves.add(move);
+    	
+    	move = new Move(row, col, row + direction, col + 1);
+    	if(MovesUtils.isLegalMove(board, board.getPawn(row, col), move.getTargetRow(), move.getTargetCol()))
+    		legalMoves.add(move);
+    	
+    	move = new Move(row, col, row + direction, col - 1);
+    	if(MovesUtils.isLegalMove(board, board.getPawn(row, col), move.getTargetRow(), move.getTargetCol()))
+    		legalMoves.add(move);
+    	
+    	return legalMoves;
     }
     
 }

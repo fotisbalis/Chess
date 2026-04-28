@@ -1,6 +1,9 @@
 package pawn;
 
+import java.util.ArrayList;
+
 import board.Board;
+import move.Move;
 import utils.MovesUtils;
 
 public class Queen extends Pawn {
@@ -59,6 +62,39 @@ public class Queen extends Pawn {
     	}
     	
     	return true;
+    }
+
+    public ArrayList<Move> getLegalMoves(Board board){
+    	
+    	ArrayList<Move> legalMoves = new ArrayList<Move>();
+    	Move move;
+    	int currentRow, currentCol;
+    	int[] directions = {-1, 0, 1};
+    	
+    	for(int directionRow : directions) {
+    		for(int directionCol : directions) {
+    			if(directionRow == 0 && directionCol == 0)
+    				continue;
+    			
+    			currentRow = row + directionRow;
+    			currentCol = col + directionCol;
+    			
+    			while(currentRow >= 0 && currentRow < 8 && currentCol >= 0 && currentCol < 8) {
+    				
+    				move = new Move(row, col, currentRow, currentCol);
+        	    	if(MovesUtils.isLegalMove(board, board.getPawn(row, col), move.getTargetRow(), move.getTargetCol()))
+        	    		legalMoves.add(move);
+    				
+    				if(board.getPawn(currentRow, currentCol) != null)
+    					break;
+    				
+    				currentRow += directionRow;
+    				currentCol += directionCol;
+    			}
+    		}
+    	}
+    	
+    	return legalMoves;
     }
     
     

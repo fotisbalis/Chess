@@ -16,14 +16,22 @@ public class GameState implements Serializable {
 	private final ArrayList<Pawn> captured;
 	private final boolean highlightMoves;
 	private final boolean autoQueenPromotion;
+	private final PawnColor playerColor;
+	private final int aiDepth;
 	
 	public GameState(Board board, PawnColor turnColor, int halfMoveCounter, ArrayList<BoardState> boardStates, ArrayList<Pawn> captured, boolean highlightMoves, boolean autoQueenPromotion) {
+		this(board, turnColor, halfMoveCounter, boardStates, captured, highlightMoves, autoQueenPromotion, null, 5);
+	}
+
+	public GameState(Board board, PawnColor turnColor, int halfMoveCounter, ArrayList<BoardState> boardStates, ArrayList<Pawn> captured, boolean highlightMoves, boolean autoQueenPromotion, PawnColor playerColor, int aiDepth) {
 		this.boardState = new BoardState(board, turnColor);
 		this.boardStates = GameStateUtils.copyBoardStates(boardStates);
 		this.halfMoveCounter = halfMoveCounter;
 		this.captured = GameStateUtils.copyCaptured(captured);
 		this.highlightMoves = highlightMoves;
 		this.autoQueenPromotion = autoQueenPromotion;
+		this.playerColor = playerColor;
+		this.aiDepth = aiDepth;
 	}
 	
 	public Board getBoard() {
@@ -52,6 +60,14 @@ public class GameState implements Serializable {
 
 	public boolean isAutoQueenPromotionEnabled() {
 		return autoQueenPromotion;
+	}
+
+	public PawnColor getPlayerColor() {
+		return playerColor;
+	}
+
+	public int getAIDepth() {
+		return aiDepth;
 	}
 	
 	

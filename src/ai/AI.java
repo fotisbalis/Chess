@@ -16,7 +16,7 @@ public class AI {
 	private static final ExecutorService EXECUTOR = Executors.newFixedThreadPool(
 			Math.max(1, Runtime.getRuntime().availableProcessors()));
 
-	public static Move chooseMove(Board board, PawnColor aiColor, int depth, int moveCounter){
+	public static Move chooseMove(Board board, PawnColor aiColor, int depth, int moveCounter, Move secondLastAIMove){
 		
 		ArrayList<Move> legalMoves = AIUtils.legalMoves(board, aiColor);
 	    int maxScore = Integer.MIN_VALUE;
@@ -25,6 +25,9 @@ public class AI {
 	    if(legalMoves.isEmpty()) {
 	        return null;
 	    }
+	    
+	    if(legalMoves.size() > 2 && legalMoves.contains(secondLastAIMove))
+	    	legalMoves.remove(secondLastAIMove);
 	    
 	    if(moveCounter < 2) {
 	    	int randomIndex = (int)(Math.random() * legalMoves.size());
@@ -69,7 +72,9 @@ public class AI {
 	    					return null;
 
 	    				Board tmpBoard = MovesUtils.simulateMove(board, pawn, move.getTargetRow(), move.getTargetCol());
-	    				PromotionUtils.handlePromotion(null, tmpBoard, aiColor, true, true, aiColor);
+	    				
+	    				if(pawn instanceof Soldier && (move.getTargetRow() == 0 || move.getTargetRow() == 7))
+	    					PromotionUtils.handlePromotion(null, tmpBoard, aiColor, true, true, aiColor);
 
 	    				int score = AIUtils.scoreAfterMove(board, tmpBoard, move, aiColor);
 	    				score += simulateMoveScoreInDepth(tmpBoard, aiColor, aiColor.opposite(), depth - 1, Integer.MIN_VALUE, Integer.MAX_VALUE);

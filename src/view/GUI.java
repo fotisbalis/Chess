@@ -3,6 +3,7 @@ package view;
 import javax.swing.*;
 import java.awt.*;
 
+import pawn.PawnColor;
 import save.*;
 import utils.*;
 
@@ -11,6 +12,7 @@ public class GUI extends JFrame {
     private static final String OPTIONS_SCREEN = "options";
     private static final String SINGLE_PLAYER_MENU_SCREEN = "single_player_menu";
     private static final String DIFFICULTY_SCREEN = "difficulty";
+    private static final String SINGLE_PLAYER_COLOR_SCREEN = "single_player_color";
     private static final String TWO_PLAYER_MENU_SCREEN = "two_player_menu";
     private static final String GAME_SCREEN = "game";
 
@@ -19,6 +21,7 @@ public class GUI extends JFrame {
     private ChessPanel chessPanel;
     private boolean highlightMoves = true;
     private boolean autoQueenPromotion = false;
+    private int pendingSinglePlayerDepth = 5;
     
     private GameState singlePlayerSavedGameState;
     private GameState twoPlayerSavedGameState;
@@ -38,6 +41,7 @@ public class GUI extends JFrame {
         screenPanel.add(new OptionsPanel(this), OPTIONS_SCREEN);
         screenPanel.add(new GameModePanel(this, true), SINGLE_PLAYER_MENU_SCREEN);
         screenPanel.add(new DifficultyPanel(this), DIFFICULTY_SCREEN);
+        screenPanel.add(new SinglePlayerColorPanel(this), SINGLE_PLAYER_COLOR_SCREEN);
         screenPanel.add(new GameModePanel(this, false), TWO_PLAYER_MENU_SCREEN);
         add(screenPanel, BorderLayout.CENTER);
 
@@ -66,6 +70,18 @@ public class GUI extends JFrame {
 
     public void showDifficultyScreen() {
         screenLayout.show(screenPanel, DIFFICULTY_SCREEN);
+    }
+
+    public void showSinglePlayerColorScreen() {
+        screenLayout.show(screenPanel, SINGLE_PLAYER_COLOR_SCREEN);
+    }
+
+    public void setPendingSinglePlayerDepth(int pendingSinglePlayerDepth) {
+        this.pendingSinglePlayerDepth = pendingSinglePlayerDepth;
+    }
+
+    public int getPendingSinglePlayerDepth() {
+        return pendingSinglePlayerDepth;
     }
 
     public boolean isHighlightMovesEnabled() {
@@ -103,15 +119,19 @@ public class GUI extends JFrame {
     }
 
     public void showSinglePlayerGameScreen() {
-    	startSinglePlayerGame(5);
+    	startSinglePlayerGame(5, PawnColor.WHITE);
     }
 
     public void startSinglePlayerGame(int aiDepth) {
+        startSinglePlayerGame(aiDepth, PawnColor.WHITE);
+    }
+
+    public void startSinglePlayerGame(int aiDepth, PawnColor playerColor) {
         if(chessPanel != null) {
             screenPanel.remove(chessPanel);
         }
 
-        chessPanel = new ChessPanel(this, highlightMoves, true, aiDepth);
+        chessPanel = new ChessPanel(this, highlightMoves, true, aiDepth, playerColor);
         screenPanel.add(chessPanel, GAME_SCREEN);
         screenPanel.revalidate();
         screenPanel.repaint();

@@ -40,25 +40,6 @@ public class MovesUtils {
 		return validMoves;
 	}
 	
-	public static boolean[][] possibleLegalMoves(Board board, Pawn pawn) {
-		boolean[][] legalMoves = new boolean[8][8];
-		int r, c;
-
-		for(r = 0; r < 8; r++) {
-			for(c = 0; c < 8; c++) {
-				legalMoves[r][c] = false;
-
-				if(pawn.getRow() == r && pawn.getCol() == c)
-					continue;
-
-				if(MovesUtils.isLegalMove(board, pawn, r, c))
-					legalMoves[r][c] = true;
-			}
-		}
-
-		return legalMoves;
-	}
-	
 	public static boolean hasLegalMoves(Board board, PawnColor color) {
 		
 		int r, c, row, col;

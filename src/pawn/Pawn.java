@@ -1,7 +1,9 @@
 package pawn;
 
 import board.*;
+import move.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public abstract class Pawn implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -51,6 +53,8 @@ public abstract class Pawn implements Serializable {
 	public abstract int getPawnValue();
 	
 	public abstract boolean isValidMove(Board board, int newRow, int newCol);
+	
+	public abstract ArrayList<Move> getLegalMoves(Board board);
 	
 }
 

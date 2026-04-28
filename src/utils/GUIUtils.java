@@ -9,6 +9,7 @@ import board.*;
 import controller.*;
 import pawn.*;
 import view.*;
+import move.*;
 
 public class GUIUtils {
 	
@@ -59,24 +60,19 @@ public class GUIUtils {
 	}
 	
 	public static void highlightPossibleMoves(Board board, Pawn pawn, JButton[][] squares) {
-		int r, c;
-		boolean[][] moves = MovesUtils.possibleLegalMoves(board, pawn);
 		
-		GUIUtils.highlightSelectedPawn(pawn, squares);
+		ArrayList<Move> moves = pawn.getLegalMoves(board);
 		
-		for(r = 0; r < 8; r++) {
-			for(c = 0; c < 8; c++) {
-				
-				if(moves[r][c])
-					squares[r][c].setBackground(Color.GREEN);
-				
-			}
+		GUIUtils.highlightSquare(pawn.getRow(), pawn.getCol(), squares, Color.ORANGE);
+		
+		for(Move move : moves) {
+			squares[move.getTargetRow()][move.getTargetCol()].setBackground(Color.GREEN);
 		}
 	}
 	
-	public static void highlightSelectedPawn(Pawn pawn, JButton[][] squares) {
+	public static void highlightSquare(int row, int col, JButton[][] squares, Color color) {
 		
-		squares[pawn.getRow()][pawn.getCol()].setBackground(Color.ORANGE);		
+		squares[row][col].setBackground(color);
 	}
 	
 	public static void resetBoardColors(Board board, JButton[][] squares) {

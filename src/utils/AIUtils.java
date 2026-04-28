@@ -15,15 +15,7 @@ public class AIUtils {
 		ArrayList<Move> legalMoves = new ArrayList<Move>();
 
 	    for(Pawn pawn : board.getPlayerPawns(aiColor)) {
-	        boolean[][] possibleLegalMoves = MovesUtils.possibleLegalMoves(board, pawn);
-
-	        for(int row = 0; row < 8; row++) {
-	            for(int col = 0; col < 8; col++) {
-	                if(possibleLegalMoves[row][col]) {
-	                    legalMoves.add(new Move(pawn.getRow(), pawn.getCol(), row, col));
-	                }
-	            }
-	    	}
+	    	legalMoves.addAll(pawn.getLegalMoves(board));
 	    }
 	    
 	    AIUtils.sortMoves(board, legalMoves);
